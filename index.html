@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <meta content="email=no" name="format-detection" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta content="telephone=no,email=no" name="format-detection"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>我的医生</title>
+  <link rel="stylesheet" type="text/css" href="style/weui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="style/jquery-weui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="style/reset.css"/>
+  <link rel="stylesheet" type="text/css" href="style/yishengliebiao.css?v=201809181046"/>
+  <link rel="stylesheet" type="text/css" href="style/style.css"/>
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+  <script src="js/iscroll-5.2.0.js"></script>
+  <script src="js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="js/jquery-weui.js"></script>
+  <script>
+    var requestUrl = window.location;
+    // console.log("请求地址="+requestUrl);
+    var appId,timestamp,nonceStr,signature;
+    // $.ajax({
+    //   url: "/web/h5/initWxJssdk",
+    //   type: 'POST',
+    //   async: false,
+    //   data : {"requestUrl":encodeURI(requestUrl)},
+    //   dataType:'json',
+    //   success: function(json) {
+    //     console.log("json="+JSON.stringify(json));
+    //     appId = json.appId;
+    //     timestamp = json.timestamp;
+    //     nonceStr = json.nonceStr;
+    //     signature = json.signature;
+    //     console.log("appId="+appId);
+    //   }
+    // });
+    //注册js事件
+    wx.config({
+      debug: false,
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+    //将右上角的一些微信的功能菜单隐藏,但是在页面未加载完成的时候,还是可以操作,有时间差
+    wx.ready(function () {
+      wx.hideMenuItems({
+        menuList: [
+          'menuItem:share:appMessage',//发送给朋友
+          'menuItem:share:qq',//分享到QQ
+          'menuItem:share:weiboApp',//分享到Weibo
+          'menuItem:share:QZone',//分享到 QQ 空间
+          'menuItem:share:timeline', // 分享到朋友圈
+          'menuItem:copyUrl', // 复制链接
+          'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+          'menuItem:openWithSafari'//在Safari中打开
+        ],
+        success: function (res) {
+          //alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+        },
+        fail: function (res) {
+          //alert(JSON.stringify(res));
+        }
+      });
+    });
+    function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]);
+      return null; //返回参数值
+    }
+    //微信支付
+    function wxpay(requestUrl,coreOpenId,orderId,responseUrl){
+      //发送ajax请求 统一下单
+      $.ajax({
+        url: requestUrl,
+        async: false,
+        type: 'POST',
+        data: {"coreOpenId":coreOpenId,"orderId":orderId},
+        cache:false,
+        dataType:'json',
+        timeout: 10000, //超时时间：10秒
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          alert("系统连接超时");
+          //TODO: 处理status， http status code，超时 408
+
+          // 注意：如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能
+
+          //是"timeout", "error", "notmodified" 和 "parsererror"。
+
+        },
+        success: function(json) {
+          if(json.code==200){
+            //拉去支付html
+            onBridgeReady(json,responseUrl);
+          }else{
+            alert("支付失败");
+          }
+        }
+      });
+    }
+    function onBridgeReady(json,responseUrl){
+      wx.chooseWXPay({
+        timestamp: json.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+        nonceStr: json.nonceStr, // 支付签名随机串，不长于 32 位
+        package: json.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+        signType: json.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+        paySign: json.paySign, // 支付签名
+        success: function (res) {
+          // 支付成功后的回调函数
+          if(res.errMsg == "chooseWXPay:ok" ) {
+            //成功
+            if(responseUrl.length>0){
+              window.location.href=responseUrl;
+            }else{
+              //关闭支付页面
+              wx.closeWindow();
+            }
+          }
+        }
+      });
+    }
+  </script>
+  <script type="text/javascript">
+    var ctx = "";
+  </script>
+</head>
+<body>
+  <div id="lyzx">
+
+    <div id="doctor_Page" class="main">
+      <ul class="ul_List">
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+              <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+              <div class="text_D doctors_Right">
+                <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                <div class=""><span class="hospital_Name">中国中医院</span></div>
+                <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+              </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+                <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+                <div class="text_D doctors_Right">
+                  <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                  <div class=""><span class="hospital_Name">中国中医院</span></div>
+                  <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+                </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+                <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+                <div class="text_D doctors_Right">
+                  <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                  <div class=""><span class="hospital_Name">中国中医院</span></div>
+                  <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+                </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+                <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+                <div class="text_D doctors_Right">
+                  <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                  <div class=""><span class="hospital_Name">中国中医院</span></div>
+                  <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+                </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+                <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+                <div class="text_D doctors_Right">
+                  <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                  <div class=""><span class="hospital_Name">中国中医院</span></div>
+                  <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+                </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="box_Show">
+            <div class="content_Top">
+              <a href="page/doctor_info.html">
+                <div class="doctors_Face doctors_Left"><img src="img/lut.jpg" alt=""></div>
+                <div class="text_D doctors_Right">
+                  <div class=""><p><span class="doctor_Name">陈医生  </span><span class="cC1B497">中医</span> <span class="fR">···</span></p></div>
+                  <div class=""><span class="hospital_Name">中国中医院</span></div>
+                  <div class="speciality">中西医结合中西医结合中西医结合中西医结合中西医结合中西医结合</div>
+                </div>
+              </a>
+            </div>
+            <div class="btn_Buottom">
+              <div class="buy"><a href=""><img src="img/b_buy.png" alt=""><spam>买药</spam></a></div>
+              <div class="consult"><a href=""><img src="img/b_consult.png" alt=""><spam>咨询</spam></a></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <div class="footer_Btn">
+        <div class="doctor_Btn"><a href="index.html"><p><img src="img/doctor_page_to.png" alt=""></p><p>良医</p></a></div>
+        <div class="personage_Btn"><a href="page/personal_center.html"><p><img src="img/personage_page_to.png" alt=""></p><p>个人</p></a></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $('#doctor_Page').height(window.innerHeight-$('.footer_Btn').height())
+  </script>
+</body>
+</html>

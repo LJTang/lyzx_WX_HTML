@@ -1,0 +1,306 @@
+/******** 购物车 *********/
+#lyzx_Shop{
+    height:100%;
+    background:#F1F0F5;
+}
+#shop_Page .title{
+    padding:6px 3%;
+}
+#shop_Page .shop_Box{
+    width:94%;
+    background:#fff;
+    margin:0 auto 10px auto;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.06)
+}
+#shop_Page .shop_Box .weui-panel:before{border:none;}
+#shop_Page .shop_Box .weui-media-box:before{border:none;}
+#shop_Page .shop_Box .weui-panel__bd{
+    border-radius:4px;
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    align-items: center;
+}
+#shop_Page .shop_Box .shop_Select{
+    /*margin-left: 10px;*/
+}
+#shop_Page .shop_Box .shop_Select img{
+    width:15px;
+    height:15px;
+    vertical-align: middle;
+}
+#shop_Page .shop_Box .weui-media-box{
+    padding:10px;
+    font-size: 14px;
+}
+#shop_Page .shop_Box .weui-media-box .weui_title{
+   color:#333;
+}
+#shop_Page .shop_Box .weui-media-box .weui-media-box__desc{font-size: 14px;}
+#shop_Page .shop_Box  .weui-media-box_appmsg{
+    align-items: end;
+}
+#shop_Page .shop_Box  .weui-media-box_appmsg img{height: auto;
+line-height: normal;}
+
+.list_Footer{
+    padding-left:10px;
+    padding-right:10px;
+}
+.amount_Box{
+    text-align: right;
+    padding:8px 0;
+}
+
+.list_Footer .btn_Box{
+    display: flex;
+    justify-content: space-around;
+}
+.list_Footer .btn_Box .flex{flex:1;}
+.list_Footer .btn_Box .hint{
+    line-height:30px;
+}
+.list_Footer .btn_Box .btn{
+    float:right;
+    width:80px;
+    height:30px;
+    line-height: 30px;
+    border-radius:20px;
+    text-align: center;
+    border:1px solid #999;
+    color:#999;
+    margin-left: 10px;
+}
+.list_Footer .btn_Box .pay{
+    color:#FAA253;
+    border:1px solid #FAA253;
+}
+#lyzx_Shop .footer{
+    height:49px;
+    border-top: 1px solid #d8d8d8;
+    background: #fff;
+    font-size: 14px;
+    line-height: 50px;
+}
+.footer .sel_All{line-height:50px;margin-left:10px;}
+.footer .sel_All img{
+    width:15px;
+    height:15px;
+    vertical-align: middle;
+}
+.footer .pay_Btn{
+    width:80px;
+    height:30px;
+    line-height:30px;
+    background: #C1B497;
+    color:#fff;
+    vertical-align: middle;
+    display: inline-block;
+    text-align: center;
+    border-radius: 20px;
+    margin:0 10px;
+}
+
+/********* 找药买药 *********/
+#lyzx_Buy{
+    height:100%;
+    background:#F1F0F5;
+}
+.cart{
+    width:25px;
+    height:25px;
+}
+#searchBar{background: #fff;border-radius: 2px;z-index:0;}
+#searchBar .weui-search-bar__form,#searchBar .weui-search-bar__box{background: #F1F0F5;}
+#searchBar .weui-search-bar__box .weui-search-bar__input{background: #F1F0F5;}
+.cart img{
+    width: 25px;
+    height:25px;
+}
+#lyzx_Buy .weui-search-bar:after{border:none;}
+.nav_Type{
+    display:flex;
+    flex-direction: row;
+    background: #fff;
+    padding:0 10px 0 10px;
+    font-size:12px;
+    color: #999;
+}
+.nav_Type ul{
+    display:flex;
+    flex-direction: row;
+    /*justify-content: space-between;*/
+    -webkit-box-flex: 1;
+    flex: 1;
+}
+.nav_Type ul li{
+    width:33.33%;
+    display:flex;
+    flex-direction: row;
+    padding:5px 0 0 0;
+}
+/*.nav_Type ul li.price{position:relative;}*/
+.nav_Type ul li.price{
+    display:flex;
+    flex-direction: row;
+}
+.nav_Type ul li.price p,.nav_Type ul li.price img{
+    width:7px;
+    height:10px;
+}
+.nav_Type ul li.price img.top{
+    vertical-align: middle;
+    margin-left:3px;
+}
+.nav_Type ul li.price img.down{
+    /*button:0;*/
+}
+.nav_Type .big_IMG{
+    width: 24px;
+    border-left:1px solid #d8d8d8;
+    padding-left: 10px;
+    margin:5px 0 10px 0;
+}
+
+.drug{
+    display: flex;
+    margin-top:10px;
+}
+.drug .drug_Type{
+    background:#fff;
+    font-size:16px;
+    margin-right: 10px;
+ }
+.drug .drug_Type ul li{
+    padding:10px 10px;
+    width:80px;
+}
+.drug .drug_Type ul li.active{
+    background:#F1F0F5;
+}
+.drug .drug_List{
+    flex: 1;
+    background: #fff;
+}
+.drug .drug_List .flex{
+    padding-left:10px;
+    padding-right:10px;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+.drug .drug_List .flex_L{
+    width:40px;
+    margin-right: 10px;
+}
+.drug .drug_List .flex_L img{
+    width:40px;
+}
+.drug .drug_List .flex_R{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+}
+.drug .drug_List .flex_R .weui-media-box__desc{color: #333;}
+.drug .drug_List .flex .drug_Pirce{
+    line-height:20px;
+}
+.drug .drug_List .flex .operation span{display:inline-block;}
+.drug .drug_List .flex .operation .toggle{display:none;}
+.drug .drug_List .flex .operation .span_num{
+    margin: 0 10px;
+}
+.drug .drug_List .flex .jian,.drug .drug_List .flex .jia{
+    width:15px;
+    height:15px;
+    line-height:15px;
+    text-align: center;
+    border:1px solid #FAA253;
+    color:#FAA253;
+    border-radius: 50%;
+}
+
+.footer .uploading{
+    height:40px;
+    line-height: 40px;
+    font-size: 18px;
+    background:#C1B497;
+    color:#fff;
+    text-align: center;
+}
+.footer .uploading img{
+    width:20px;
+    height:20px;
+    background:#C1B497;
+    color:#fff;
+    vertical-align: middle;
+}
+/**********************************/
+#lyzx_doctorInfo{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#F1F0F5;
+}
+.doctorInfo_Head{
+    padding:10px;
+    background: #fff;
+    display: flex;
+}
+.doctorInfo_Head img{
+   width: 60px;
+    height:60px;
+    border-radius:50%;
+}
+.doctorInfo_Head .doctorInfo_L{
+   width: 60px;
+   height: 60px;
+    border-radius:50%;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.06)
+}
+.doctorInfo_Head .doctorInfo_R{
+    margin-left:10px;
+}
+
+.fun_List{
+    margin:10px;
+    background:#fff;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.06);
+    display:flex;
+    border-radius:4px;
+}
+.fun_List div{
+    width: 33.33%;
+    text-align: center;
+    font-size:14px;
+    color:#333;
+}
+.fun_List a{
+    display: block;
+    color:#333;
+    padding:5px 0;
+}
+.fun_List a p:first-child{
+    height:30px;
+    margin: 0;
+    padding: 0;
+}
+.fun_List a img{
+    width:30px;
+    height:30px;
+}
+.introduce_Box{
+    margin-top: 10px;
+    background: #fff;
+}
+.introduce_Box .title{
+    padding:10px;
+    font-size: 14px;
+    border-bottom: 1px solid #d8d8d8;
+}
+.introduce_Box .introduce_Text{
+    padding:10px;
+    font-size: 12px;
+    color: #999;
+}

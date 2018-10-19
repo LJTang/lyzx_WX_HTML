@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>医生信息</title>
+  <meta charset="UTF-8">
+  <!--<meta content="email=no" name="format-detection" />-->
+  <!--<meta name="format-detection" content="telephone=no" />-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!--<meta content="telephone=no,email=no" name="format-detection"/>-->
+  <!--<meta content="yes" name="apple-mobile-web-app-capable"/>-->
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+  <link rel="stylesheet" type="text/css" href="../style/order.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/goods.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/style.css"/>
+  <link rel="stylesheet" href="../style/weui.min.css">
+  <link rel="stylesheet" href="../style/jquery-weui.css">
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+
+  <script src="../js/iscroll-5.2.0.js"></script>
+  <script src="../js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="../js/jquery-weui.js"></script>
+
+  <script>
+    var requestUrl = window.location;
+    // console.log("请求地址="+requestUrl);
+    var appId,timestamp,nonceStr,signature;
+    // $.ajax({
+    //   url: "/web/h5/initWxJssdk",
+    //   type: 'POST',
+    //   async: false,
+    //   data : {"requestUrl":encodeURI(requestUrl)},
+    //   dataType:'json',
+    //   success: function(json) {
+    //     console.log("json="+JSON.stringify(json));
+    //     appId = json.appId;
+    //     timestamp = json.timestamp;
+    //     nonceStr = json.nonceStr;
+    //     signature = json.signature;
+    //     console.log("appId="+appId);
+    //   }
+    // });
+    //注册js事件
+    wx.config({
+      debug: false,
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+    //将右上角的一些微信的功能菜单隐藏,但是在页面未加载完成的时候,还是可以操作,有时间差
+    wx.ready(function () {
+      wx.hideMenuItems({
+        menuList: [
+          'menuItem:share:appMessage',//发送给朋友
+          'menuItem:share:qq',//分享到QQ
+          'menuItem:share:weiboApp',//分享到Weibo
+          'menuItem:share:QZone',//分享到 QQ 空间
+          'menuItem:share:timeline', // 分享到朋友圈
+          'menuItem:copyUrl', // 复制链接
+          'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+          'menuItem:openWithSafari'//在Safari中打开
+        ],
+        success: function (res) {
+          //alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+        },
+        fail: function (res) {
+          //alert(JSON.stringify(res));
+        }
+      });
+    });
+    function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]);
+      return null; //返回参数值
+    }
+    //微信支付
+    function wxpay(requestUrl,coreOpenId,orderId,responseUrl){
+      //发送ajax请求 统一下单
+      $.ajax({
+        url: requestUrl,
+        async: false,
+        type: 'POST',
+        data: {"coreOpenId":coreOpenId,"orderId":orderId},
+        cache:false,
+        dataType:'json',
+        timeout: 10000, //超时时间：10秒
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          alert("系统连接超时");
+          //TODO: 处理status， http status code，超时 408
+
+          // 注意：如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能
+
+          //是"timeout", "error", "notmodified" 和 "parsererror"。
+
+        },
+        success: function(json) {
+          if(json.code==200){
+            //拉去支付html
+            onBridgeReady(json,responseUrl);
+          }else{
+            alert("支付失败");
+          }
+        }
+      });
+    }
+    function onBridgeReady(json,responseUrl){
+      wx.chooseWXPay({
+        timestamp: json.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+        nonceStr: json.nonceStr, // 支付签名随机串，不长于 32 位
+        package: json.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+        signType: json.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+        paySign: json.paySign, // 支付签名
+        success: function (res) {
+          // 支付成功后的回调函数
+          if(res.errMsg == "chooseWXPay:ok" ) {
+            //成功
+            if(responseUrl.length>0){
+              window.location.href=responseUrl;
+            }else{
+              //关闭支付页面
+              wx.closeWindow();
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</head>
+<body>
+<div id="lyzx_doctorInfo">
+  <div id="doctorInfo_Page" class="main">
+    <div class="doctorInfo_Head">
+      <div class="doctorInfo_L"><img src="../img/lut.jpg" alt=""></div>
+      <div class="doctorInfo_R">
+        <p><span class="f18">L继</span><span class="mal10 f12 cC1B497">中医</span></p>
+        <p class="c6 f14">中国中医</p>
+        <p class="c9 f12">患者数 <span>10</span></p>
+      </div>
+    </div>
+    
+    <div class="fun_List">
+        <div class="">
+          <a href="buy.html">
+            <p><img src="../img/buy_icon.png" alt=""></p>
+            <p>找药买药</p>
+          </a>
+        </div>
+        <div class="Upload_Photo">
+          <a href="#">
+            <p><img src="../img/up_icon.png" alt=""></p>
+            <p>传处方买药</p>
+          </a>
+        </div>
+
+        <div class="">
+          <a href="buy.html">
+            <p><img src="../img/consult.png" alt=""></p>
+            <p>立即咨询</p>
+          </a>
+        </div>
+    </div>
+
+    
+    <div class="introduce_Box">
+      <div class="title">擅长及介绍</div>
+      <div class="introduce_Text">uihfsjdfskjfksjklfhskfhsjfhskjfhsjhfs打电话放电饭锅地方的恢复规划人文关怀感受感受</div>
+
+      <div class="title">医学教育背景介绍</div>
+      <div class="introduce_Text">uihfsjdfskjfksjklfhskfhsjfhskjfhsjhfs打电话放电饭锅地方的恢复规划人文关怀感受感受</div>
+    </div>
+  </div>
+
+  <!--<div class="footer">-->
+    <!--<div class="uploading">-->
+      <!--<img src="../img/lut.jpg" alt="">-->
+      <!--<span>传处方买药</span>-->
+    <!--</div>-->
+  <!--</div>-->
+  <div class="popUp_Box confirmationMessage_PopUp display_N">
+    <div class="shadow"></div>
+    <div class="show_Layer confirmationMessage_Box">
+      <div class="close_IMG close"><img src="../img/close.png" alt=""></div>
+      <div class="box">
+        <div class="title f20">确认信息</div>
+        <div class="f12 c9 mal10">填写您的手机号，便于我们药师与您联系</div>
+        <div class="phone">
+          <div class="f18 text">手机号</div>
+          <div class="div_Input"><input type="number" placeholder="请输入手机号" style="font-size:smaller;" maxlength="11"/></div>
+        </div>
+
+        <div class="confirmationMessage_Btn">
+          <div class="close">跳过</div>
+          <div class="sub">提交</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="popUp_Box display_N">
+    <div class="shadow"></div>
+    <div class="show_Layer floor_Box">
+
+      <div class="floor">
+        <div class="Upload_Fun">
+          <div class="photograph"><input type="file" placeholder="拍照" accept="image/*" capture="camera"><span>拍照</span></div>
+          <div class="photo_Album"><input type="file" id="fileUp" accept="image/png,image/jpeg"><span>从手机相册选择</span></div>
+        </div>
+        <div class="close" >取消</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="../js/goods.js"></script>
+<script>
+  $(function() {
+
+    $('.Upload_Photo').click(function () {
+      // onPopup();
+      $('.confirmationMessage_PopUp').removeClass('display_N');
+      var height=$('.confirmationMessage_Box').height();
+      $('.confirmationMessage_Box').css('margin-top','-'+height/2+'px');
+    });
+    $('.close').click(function () {
+      closePopup();
+    })
+  });
+</script>
+</body>
+</html>

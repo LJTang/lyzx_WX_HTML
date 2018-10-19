@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="email=no" name="format-detection" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>我的医生</title>
+  <link rel="stylesheet" type="text/css" href="style/weui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="style/jquery-weui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="style/reset.css"/>
+  <link rel="stylesheet" type="text/css" href="style/yishengliebiao.css?v=201809181046"/>
+  <!--<script src="/static/h5/lib/jquery.min.js"></script>-->
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+  <script src="js/iscroll-5.2.0.js"></script>
+  <script src="js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="js/jquery-weui.js"></script>
+  <script>
+    var requestUrl = window.location;
+    // console.log("请求地址="+requestUrl);
+    var appId,timestamp,nonceStr,signature;
+    $.ajax({
+      url: "/web/h5/initWxJssdk",
+      type: 'POST',
+      async: false,
+      data : {"requestUrl":encodeURI(requestUrl)},
+      dataType:'json',
+      success: function(json) {
+        console.log("json="+JSON.stringify(json));
+        appId = json.appId;
+        timestamp = json.timestamp;
+        nonceStr = json.nonceStr;
+        signature = json.signature;
+        console.log("appId="+appId);
+      }
+    });
+    //注册js事件
+    wx.config({
+      debug: false,
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+    //将右上角的一些微信的功能菜单隐藏,但是在页面未加载完成的时候,还是可以操作,有时间差
+    wx.ready(function () {
+      wx.hideMenuItems({
+        menuList: [
+          'menuItem:share:appMessage',//发送给朋友
+          'menuItem:share:qq',//分享到QQ
+          'menuItem:share:weiboApp',//分享到Weibo
+          'menuItem:share:QZone',//分享到 QQ 空间
+          'menuItem:share:timeline', // 分享到朋友圈
+          'menuItem:copyUrl', // 复制链接
+          'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+          'menuItem:openWithSafari'//在Safari中打开
+        ],
+        success: function (res) {
+          //alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+        },
+        fail: function (res) {
+          //alert(JSON.stringify(res));
+        }
+      });
+    });
+    function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]);
+      return null; //返回参数值
+    }
+    //微信支付
+    function wxpay(requestUrl,coreOpenId,orderId,responseUrl){
+      //发送ajax请求 统一下单
+      $.ajax({
+        url: requestUrl,
+        async: false,
+        type: 'POST',
+        data: {"coreOpenId":coreOpenId,"orderId":orderId},
+        cache:false,
+        dataType:'json',
+        timeout: 10000, //超时时间：10秒
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          alert("系统连接超时");
+          //TODO: 处理status， http status code，超时 408
+
+          // 注意：如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能
+
+          //是"timeout", "error", "notmodified" 和 "parsererror"。
+
+        },
+        success: function(json) {
+          if(json.code==200){
+            //拉去支付html
+            onBridgeReady(json,responseUrl);
+          }else{
+            alert("支付失败");
+          }
+        }
+      });
+    }
+    function onBridgeReady(json,responseUrl){
+      wx.chooseWXPay({
+        timestamp: json.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+        nonceStr: json.nonceStr, // 支付签名随机串，不长于 32 位
+        package: json.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+        signType: json.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+        paySign: json.paySign, // 支付签名
+        success: function (res) {
+          // 支付成功后的回调函数
+          if(res.errMsg == "chooseWXPay:ok" ) {
+            //成功
+            if(responseUrl.length>0){
+              window.location.href=responseUrl;
+            }else{
+              //关闭支付页面
+              wx.closeWindow();
+            }
+          }
+        }
+      });
+    }
+  </script>
+  <script type="text/javascript">
+    var ctx = "";
+  </script>
+</head>
+<body>
+<input type="hidden" id="coreOpenId" value="">
+<input type="hidden" id="nodeOpenId" value="o3Yk8wZuhjpQqr1hZPGIySKhwXIQ">
+<input type="hidden" id="noDoc" value="false">
+<!-- 医生列表为空 -->
+
+<div id="list">
+  <div>
+    <!-- 下拉刷新 -->
+    <!-- <div id="pullDown" class="weui-loadmore" style="display:none">
+        <i class="weui-loading"></i>
+       <span class="pullUpLabel weui-loadmore__tips">下拉刷新...</span>
+    </div> -->
+
+    <div id="contentList">
+
+      <ul>
+        <li>
+          <div class="up" onclick="gohome('124','11165');">
+            <div class="upLeft">
+
+              <img src="/img/show?objectId=5ad80ddb01e7df6b11b71fc4"/>
+            </div>
+            <div class="upRight">
+              <p class="docNameP">
+                <span class="docName">李龙测试</span>
+                <span class="renzheng">已认证</span>
+              </p>
+              <p class="zhiwei">
+                <span class="keshi">放疗科</span>
+                <span class="zhicheng">主任医师</span>
+              </p>
+              <p>
+                <span>重庆市涪陵区第二人民医院</span>
+              </p>
+
+              <p class="shanchang">
+                <span>擅长：电话号好点的好多好多话多喝点</span>
+              </p>
+
+            </div>
+          </div>
+          <div class="down">
+
+
+            <a target="_blank" href="/web/h5/caseUpload/index?doctorId=124&userId=11165" class="zhenshi">
+              <span>上传处方买药</span>
+            </a>
+            <a target="_blank" href="doctor_dialogue.html" class="zixun">
+              <span>咨询医生</span>
+            </a>
+
+
+            <!-- 	    				<span>进入医生诊室</span> -->
+            <!-- 	    			</a> -->
+
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+    <!-- 加载更多 -->
+    <div id="pullUp" class="weui-loadmore" style="display:none">
+      <i class="weui-loading"></i>
+      <span class="pullUpLabel weui-loadmore__tips">正在加载...</span>
+    </div>
+    <!-- 没有更多数据 -->
+    <div id="noMore" class="weui-loadmore" style="display:none">
+      <span class="weui-loadmore__tips">没有更多了...</span>
+    </div>
+  </div>
+</div>
+<script type="text/template" id="doctor-user">
+  <ul>
+    <li>
+      <div class="up" onclick="gohome('','');">
+        <div class="upLeft">
+          <img src="{-photoUrl}"/>
+        </div>
+        <div class="upRight">
+          <p class="docNameP">
+            <span class="docName">{-doctorName }</span>
+            <span class="renzheng">[Status]</span>
+          </p>
+          <p class="zhiwei">
+            <span class="keshi">{-departmentName }</span>
+            <span class="zhicheng">{-doctorTitle }</span>
+          </p>
+          <p>
+            <span>{-hospitalName }</span>
+          </p>
+
+        </div>
+      </div>
+      <div class="down">
+        <a target="_blank" href="[zhaoyaomaiyao]" class="zhenshi">
+          <span>[maiyaoStr]</span>
+        </a>
+        <a target="_blank" href="[jinruzhenshi]" class="zixun">
+          <span>[ziunStr]</span>
+        </a>
+      </div>
+    </li>
+  </ul>
+</script>
+<!--<script src="/static/h5/lib/city-picker.min.js"></script>
+<script src="/static/h5/lib/jquery-weui.min.js"></script>-->
+
+<!--<script src="/static/h5/js/underscore.js"></script>-->
+<script type="text/javascript">
+  //初始化iscroll 滚屏
+  var myScroll;
+  //上拉加载更多|下拉刷新操作变量
+  var pullDownEl, pullDownOffset, pullUpEl, pullUpOffset, noDataFlag = false,
+//无数据标志位
+    nodeOpenId = $("#nodeOpenId").val(),
+    coreOpenId = $("#coreOpenId").val(),
+    pageNo = 1; //页数
+  pageSize = 10;
+  /**
+   * 滚动翻页 （自定义实现此方法）
+   * myScroll.refresh();      // 数据加载完成后，调用界面更新方法
+   */
+  function pullUpAction() {
+    console.log("异步加载数据。。。。。。。。。。。。");
+    $('#pullUp').show();
+    //组织请求数据
+    pageNo++;
+    var params = {
+      "nodeOpenId": nodeOpenId,
+      "pageNo": "" + pageNo,
+      "pageSize": "" + pageSize
+    }
+    $.ajax({
+      type: "post",
+      contentType: "application/json;charset=utf-8",
+      url: ctx + "/api/h5/user/doctor?task=USER_DOCTOR_LIST",
+      data: JSON.stringify(params),
+      dataType: "json",
+      beforeSend: function() {
+        $('#pullUp').show();
+      },
+      success: function(res) {
+        if (res.ret == 200) {
+          //成功
+          var content = res.data;
+          for (var i = 0; i < content.length; i++) {
+            console.log(content[i]);
+            var photoUrl = content[i].photoUrl;
+            if (photoUrl == null || photoUrl == '') content[i].photoUrl = "/static/easemob/img/doctorHead.png";
+            var htmlstr = showBox(content[i]);
+            $("#contentList").append(htmlstr);
+          }
+          setTimeout(myScroll.refresh(), 200);
+        } else if (res.ret == 601) {
+          //没有数据了
+          $("#noMore").show();
+          noDataFlag = true;
+          setTimeout(myScroll.refresh(), 200);
+        } else if (res.ret == 502) {
+          //未知错误
+          pageNo--;
+        } else {
+          console.log(res.msg);
+        }
+
+      },
+      error: function(error) {
+        console.log(error);
+        pageNo--;
+      }
+    });
+    $('#pullUp').hide();
+    setTimeout(myScroll.refresh(), 200); //数据加载完成后，调用界面更新方法
+  }
+
+  //显示医生列表模板/web/hxtalk?uid=&did=`/web/h5/user/doctor/
+  function showBox(obj) {
+    //生成数据绑定函数
+    var doctorUser = _.template($("#doctor-user").html());
+    var domstring = doctorUser(obj);
+    domstring = domstring.replace(new RegExp("&lt;", "gm"), "<");
+    domstring = domstring.replace(new RegExp("&gt;", "gm"), ">");
+    domstring = domstring.replace(new RegExp("&quot;", "gm"), "'");
+    if (obj.qualificationsStatus == 1) domstring = domstring.replace("[Status]", "已认证");
+    else if (obj.qualificationsStatus == 0) domstring = domstring.replace("[Status]", "未认证");
+    else if (obj.qualificationsStatus == 2) domstring = domstring.replace("[Status]", "未通过");
+    else domstring = domstring.replace("[Status]", "未知状态");
+    if (obj.status == 1 || obj.status == 9) {
+      domstring = domstring.replace("[zixunStr]", "咨询医生");
+      domstring = domstring.replace("[zhenshiStr]", "进入诊室");
+      domstring = domstring.replace("[maiyaoStr]", "上传处方买药");
+      //替换立即咨询链接地址
+      domstring = domstring.replace("[lijiziun]", ctx + "/web/hxtalk?uid=" + obj.userId + "&did=" + obj.doctorId);
+      //替换进入药房链接地址
+      domstring = domstring.replace("[jinruzhenshi]", ctx + "/web/h5/user/doctor/?doctorId=" + obj.doctorId + "&userId=" + obj.userId + "&coreOpenId=" + coreOpenId + "&nodeOpenId=" + nodeOpenId);
+      //替换找药买药链接地址
+      domstring = domstring.replace("[zhaoyaomaiyao]", ctx + "/web/h5/caseUpload/index?doctorId=" + obj.doctorId+ "&userId=" + obj.userId);
+    } else {
+      domstring = domstring.replace("[zixunStr]", "等待医生同意");
+      domstring = domstring.replace("[zhenshiStr]", "等待医生同意");
+      //替换立即咨询链接地址
+      domstring = domstring.replace("[lijiziun]", "#");
+      //替换进入药房链接地址
+      domstring = domstring.replace("[jinruzhenshi]", "#");
+    }
+
+    return domstring;
+  }
+
+  function initScroll() {
+    myScroll = new IScroll('#list', {
+      //dom改变自动刷新
+      checkDOMChanges: true,
+      click: true,
+      tap: true
+    });
+    console.log(myScroll);
+    //滑动结束后调用
+    myScroll.on('scrollEnd',
+      function() {
+        var noDoc = $("#noDoc").val();
+        console.log(typeof(noDoc));
+        console.log(noDoc);
+        if (noDataFlag) {
+          //alert("不要再滑了，我是有底线的------------");
+          return false;
+        } else if (noDoc == "true") {
+          return false;
+        } else {
+          if ( - this.y + $('#list').height() >= $("#contentList").height()) {
+            $('#pullUp').show();
+            setTimeout(myScroll.refresh(), 200); //数据加载完成后，调用界面更新方法
+            pullUpAction(); // ajax call
+          }
+        }
+      });
+    //滑动中调用
+    /*myScroll.on("scrollMove",function () {
+			alert("scrollMove");
+        	console.log("onScrollMove");
+            if (this.y > 5 && !pullDownEl.className.match('flip')) {
+                pullDownEl.className = 'flip';
+                pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
+                this.minScrollY = 0;
+            } else if (this.y < 5 && pullDownEl.className.match('flip')) {
+                pullDownEl.className = '';
+                pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+                this.minScrollY = -pullDownOffset;
+            } else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
+                pullUpEl.className = 'flip';
+                pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始更新...';
+                this.maxScrollY = this.maxScrollY;
+                $("#pullUp").show();
+            } else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
+                pullUpEl.className = '';
+                pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';
+                this.maxScrollY = pullUpOffset;
+                $("#pullUp").show();
+            }
+        });*/
+  }
+  //初始化绑定iScroll控件
+  document.addEventListener('touchmove',function(e) {e.preventDefault();},false);
+  document.addEventListener('DOMContentLoaded', initScroll, false);
+  //setTimeout(initScroll,200);
+  /*	click事件用tap代替 示例如下
+    ajax 修改dom以后 调用     myScroll.refresh() */
+  $('#list').on('tap',function() {
+    //alert(3)
+  });
+
+  function gohome(doctorId,userId){
+    window.location.href = '/web/h5/user/doctor?doctorId='+doctorId+'&userId='+userId+'&coreOpenId=&nodeOpenId=o3Yk8wZuhjpQqr1hZPGIySKhwXIQ';
+  }
+</script>
+</body>
+</html>

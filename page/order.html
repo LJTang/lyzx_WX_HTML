@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>我的订单</title>
+  <meta charset="UTF-8">
+  <!--<meta content="email=no" name="format-detection" />-->
+  <!--<meta name="format-detection" content="telephone=no" />-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!--<meta content="telephone=no,email=no" name="format-detection"/>-->
+  <!--<meta content="yes" name="apple-mobile-web-app-capable"/>-->
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+  <!--<link rel="stylesheet" type="text/css" href="../style/reset.css"/>-->
+  <link rel="stylesheet" type="text/css" href="../style/order.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/yishengliebiao.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/style.css"/>
+  <link rel="stylesheet" href="../style/weui.min.css">
+  <link rel="stylesheet" href="../style/jquery-weui.css">
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+
+  <script src="../js/iscroll-5.2.0.js"></script>
+  <script src="../js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="../js/jquery-weui.js"></script>
+
+  <script>
+    var requestUrl = window.location;
+    // console.log("请求地址="+requestUrl);
+    var appId,timestamp,nonceStr,signature;
+    // $.ajax({
+    //   url: "/web/h5/initWxJssdk",
+    //   type: 'POST',
+    //   async: false,
+    //   data : {"requestUrl":encodeURI(requestUrl)},
+    //   dataType:'json',
+    //   success: function(json) {
+    //     console.log("json="+JSON.stringify(json));
+    //     appId = json.appId;
+    //     timestamp = json.timestamp;
+    //     nonceStr = json.nonceStr;
+    //     signature = json.signature;
+    //     console.log("appId="+appId);
+    //   }
+    // });
+    //注册js事件
+    wx.config({
+      debug: false,
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+    //将右上角的一些微信的功能菜单隐藏,但是在页面未加载完成的时候,还是可以操作,有时间差
+    wx.ready(function () {
+      wx.hideMenuItems({
+        menuList: [
+          'menuItem:share:appMessage',//发送给朋友
+          'menuItem:share:qq',//分享到QQ
+          'menuItem:share:weiboApp',//分享到Weibo
+          'menuItem:share:QZone',//分享到 QQ 空间
+          'menuItem:share:timeline', // 分享到朋友圈
+          'menuItem:copyUrl', // 复制链接
+          'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+          'menuItem:openWithSafari'//在Safari中打开
+        ],
+        success: function (res) {
+          //alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+        },
+        fail: function (res) {
+          //alert(JSON.stringify(res));
+        }
+      });
+    });
+    function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]);
+      return null; //返回参数值
+    }
+    //微信支付
+    function wxpay(requestUrl,coreOpenId,orderId,responseUrl){
+      //发送ajax请求 统一下单
+      $.ajax({
+        url: requestUrl,
+        async: false,
+        type: 'POST',
+        data: {"coreOpenId":coreOpenId,"orderId":orderId},
+        cache:false,
+        dataType:'json',
+        timeout: 10000, //超时时间：10秒
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          alert("系统连接超时");
+          //TODO: 处理status， http status code，超时 408
+
+          // 注意：如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能
+
+          //是"timeout", "error", "notmodified" 和 "parsererror"。
+
+        },
+        success: function(json) {
+          if(json.code==200){
+            //拉去支付html
+            onBridgeReady(json,responseUrl);
+          }else{
+            alert("支付失败");
+          }
+        }
+      });
+    }
+    function onBridgeReady(json,responseUrl){
+      wx.chooseWXPay({
+        timestamp: json.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+        nonceStr: json.nonceStr, // 支付签名随机串，不长于 32 位
+        package: json.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+        signType: json.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+        paySign: json.paySign, // 支付签名
+        success: function (res) {
+          // 支付成功后的回调函数
+          if(res.errMsg == "chooseWXPay:ok" ) {
+            //成功
+            if(responseUrl.length>0){
+              window.location.href=responseUrl;
+            }else{
+              //关闭支付页面
+              wx.closeWindow();
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</head>
+<body>
+<div id="lyzx_Order">
+  <div id="order_Page" class="main">
+
+    <div class="weui-tab">
+      <div class="weui-navbar">
+        <a class="weui-navbar__item weui-bar__item--on" href="#tab1">
+          线上购药
+        </a>
+        <a class="weui-navbar__item" href="#tab2">
+          医生服务
+        </a>
+        <a class="weui-navbar__item" href="#tab3">
+          付费聊天
+        </a>
+        <a class="weui-navbar__item" href="#tab4">
+          预约就诊
+        </a>
+        <a class="weui-navbar__item" href="#tab5">
+          处方购药
+        </a>
+      </div>
+
+
+      <div class="weui-tab__bd">
+        <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+          <div class="order_List">
+            <div class="weui-panel__ft pharmacy_Name">
+              <a href="order_details.html" class="weui-cell weui-cell_access weui-cell_link" style="padding: 0.2rem;">
+                <div class="title">大药房</div>
+                <span class="weui-cell__ft"></span>
+                <span class="fR">已发货</span>
+              </a>
+            </div>
+
+            <div class="list_Box">
+              <a href="">
+                <div class="goods">
+                  <div class="img">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt="">
+                  </div>
+                  <div class="text">
+                    <dvi class="title">
+                      <div class="desc">标题一古城的是个低</div>
+                      <div class="quantity ">
+                        <p>￥12.00</p>
+                        <p>x 12</p>
+                      </div>
+                    </dvi>
+                    <dvi class="desc_Text">
+                      55555yyyyyyyyyyyyyyyyyyyyyyyyy666666666666666666666666
+                    </dvi>
+                  </div>
+                </div>
+
+                <div class="goods">
+                  <div class="img">备注</div>
+                  <div class="text">
+                    <dvi class="desc_Text">
+                      55555yyyyyyyyyyyyyyyyyyyyyyyyy666666666666666666666666
+                    </dvi>
+                  </div>
+                </div>
+
+              </a>
+            </div>
+
+            <div class="list_Footer">
+              <div class="amount_Box">共计1件商品，合计：￥109.00</div>
+              <div class="btn_Box">
+                <div class="flex"></div>
+                <div class="btn">查看状态</div>
+                <div class="btn pay">确认支付</div>
+              </div>
+            </div>
+        </div>
+        <div id="tab2" class="weui-tab__bd-item">
+          <h1>页面二</h1>
+        </div>
+        <div id="tab3" class="weui-tab__bd-item">
+          <h1>页面三</h1>
+        </div>
+        <div id="tab4" class="weui-tab__bd-item">
+          <h1>页面四</h1>
+        </div>
+        <div id="tab5" class="weui-tab__bd-item">
+          <h1>页面五</h1>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<script>
+  $(function() {
+    // alert($('.footer').height())
+    $('#personalCenter_Page').height(window.innerHeight-$('.footer').height())
+  });
+</script>
+</body>
+</html>

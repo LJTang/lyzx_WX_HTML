@@ -1,0 +1,885 @@
+#app, body, html {
+    width: 100%;
+    height: 100%;
+    background: #f5f5f6;
+    overflow: hidden;
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code,
+form, fieldset, legend, input, textarea, p, blockquote, th, td, hr,
+button, article, aside, details, figcaption, figure, footer, header,
+menu, nav, section {
+    margin: 0;
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+a img {
+    border: 0;
+}
+
+#app {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column;
+    flex-flow: column;
+    position: relative;
+}
+
+#app #hua {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling : touch; 
+}
+
+#app .con {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 0.266666rem;
+}
+
+#app .con .tip {
+    clear: both;
+    margin: 0 auto;
+    padding: 0.5rem 0.2rem;
+    font-size: 0.6rem;
+    color: #fff;
+    text-align: center;
+}
+
+#app .con .kong {
+    width: 100%;
+    height: 0px;
+    overflow: hidden;
+    color: #f5f5f6;
+}
+
+#app .con .tip span {
+    padding: 0.133333rem 0.266666rem;
+    height: 0.52rem;
+    line-height: 0.52rem;
+    background: #cecece;
+    border-radius: 0.106666rem;
+    margin-left: 2px;
+}
+
+#app .con .ziji, #app .con .duifang {
+    width: 100%;
+    height: auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: .5rem 0;
+}
+
+#app .con .ziji .zijiImg, #app .con .duifang .zijiImg, #app .con .ziji .duifangImg,
+#app .con .duifang .duifangImg {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: block;
+    float: right;
+    overflow: hidden;
+}
+
+#app .con .ziji .zijiImg img, #app .con .duifang .zijiImg img, #app .con .ziji .duifangImg img,
+#app .con .duifang .duifangImg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#app .con .ziji .zijiL, #app .con .duifang .zijiL, #app .con .ziji .duifangR,
+#app .con .duifang .duifangR {
+    width: 3rem;
+}
+
+#app .con .duifang .morentishiR {
+    width: 3rem;
+}
+
+#app .con .ziji .zijiText, #app .con .duifang .zijiText, #app .con .ziji .duifangText,
+#app .con .duifang .duifangText {
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+#app .con .ziji .zijiText .txtP, #app .con .duifang .zijiText .txtP,
+#app .con .ziji .duifangText .txtP, #app .con .duifang .duifangText .txtP {
+    padding: .2rem .5rem;
+    position: relative;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#app .con .ziji {
+    -webkit-box-direction: reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
+
+#app .con .ziji .zijiText {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
+
+#app .con .ziji .zijiText .txtP {
+    line-height: 22px;
+    padding: 0.4rem 0.2rem;
+    margin-right: .3rem;
+    background: #a0e75a;
+    border: 0.013333rem solid #6fb44d;
+}
+
+#app .con .ziji .zijiText .txtP ul {
+    line-height: 2;
+}
+
+#app .con .ziji .zijiText .txtP:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 1rem;
+    bottom: auto;
+    left: auto;
+    right: -4px;
+    border-width: 0.3rem 0 0.3rem 0.3rem;
+    border-color: transparent #a0e75a;
+}
+
+#app .con .ziji .zijiText .txtP:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 1rem;
+    bottom: auto;
+    left: auto;
+    right: -5px;
+    border-width: 0.3rem 0 0.3rem 0.3rem;
+    border-color: transparent #6fb44d;
+}
+
+#app .con .duifang {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+#app .con .duifang .duifangText {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+#app .con .duifang .duifangText .txtP {
+    line-height: 22px;
+    padding: 0.4rem 0.2rem;
+    margin-left: 0.266666rem;
+    background: #f5f5f6;
+    border: 0.013333rem solid #ccc;
+}
+
+.zhifu_div {
+    line-height: 20px;
+    font-size: 16px;
+}
+
+#app .con .duifang .duifangText .txtP:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 1rem;
+    bottom: auto;
+    left: -4px;
+    border-width: 0.3rem 0.3rem 0.3rem 0;
+    border-color: transparent #ccc;
+}
+
+#app .con .duifang .duifangText .txtP:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 1rem;
+    bottom: auto;
+    left: -3px;
+    border-width: 0.3rem 0.3rem 0.3rem 0;
+    border-color: transparent #fff;
+}
+
+#app .con div .speech {
+    float: left;
+    table-layout: fixed;
+    word-break: break-all;
+    position: relative;
+    background: #9eea6a;
+    border-radius: 5px;
+    font-size: 0.4rem;
+    line-height: 0.5rem;
+    vertical-align: middle;
+}
+
+#app .con div .speech:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -0.09rem;
+    top: 0.366rem;
+    border: 1rem solid;
+    border-color: transparent transparent #989898 transparent;
+}
+
+#app .con div .speech:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -0.133333rem;
+    top: 0.366rem;
+    border: 0.4rem solid;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+#app .bottom {
+    width: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+#app .bottom .botInput {
+    padding: 0.2rem 0 0.1rem;
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row;
+    flex-flow: row;
+    border-top: 0.05rem solid #e2e2e3;
+    border-bottom: 0.05rem solid #e2e2e3;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#app .bottom .botInput .myInput {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    max-width:68%;
+    padding: 0.2rem 2% 0.1rem;
+}
+
+#app .bottom .botInput .myInput .input {
+    background: #fff;
+    min-height: 2rem;
+    max-height: 4.6rem;
+    overflow: hidden;
+    line-height: 20px;
+    vertical-align: middle;
+    padding: 0.2rem 2% 0.1rem;
+    border: 0.013333rem solid #e2e2e3;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#app .bottom .botInput .face {
+    height: 2.05rem;
+    width: 1.95rem;
+    line-height: 2.05rem;
+    padding: 0 4%;
+    background: #F5F5F6;
+    position: absolute;
+    bottom: 5px;
+    right: 45px;
+}
+
+#app .bottom .botInput .more {
+    height: 2.05rem;
+    width: 1.95rem;
+    line-height: 2.05rem;
+    padding: 0 2.5%;
+    background: #F5F5F6;
+    position: absolute;
+    bottom: 5px;
+    right: 14px;
+}
+
+#app .bottom .botInput .face i, #app .bottom .botInput .more i {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: #F5F5F6;
+}
+
+#app .bottom .botInput .face .biaoqing, #app .bottom .botInput .more .biaoqing {
+    background: url(../img/chat_face.png) no-repeat center;
+    background-size: 100%;
+}
+
+#app .bottom .botInput .face .jiahao, #app .bottom .botInput .more .jiahao {
+    background: url(../img/chat_jiahao.png) no-repeat center;
+    background-size: 100%;
+}
+
+#app .bottom .botInput .face {
+    padding-left: 0;
+}
+
+#app .bottom .botInput .more {
+    padding-right: 0.24rem;
+}
+
+#app .bottom .botInput .send {
+    width: 3rem;
+    text-align: center;
+    padding-right: .5rem;
+    height: 2rem;
+    line-height: 2rem;
+    position: absolute;
+    bottom: 5px;
+    right: 0;
+}
+
+#app .bottom .botInput .send a {
+    display: block;
+    width: 100%;
+    background: #42c30c;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+}
+
+#app .bottom  .jiahaoList {
+    width: 100%;
+    height: 243.61px;
+    padding-top: 0.4rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-flow: row;
+    color: #727378;
+}
+
+#app .bottom .jiahaoList dl {
+    width: 4.5rem;
+    margin: 5rem auto;
+}
+
+#app .bottom .jiahaoList dl dt {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+#app .bottom .jiahaoList dl dd {
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    padding: .5rem 0;
+    text-align: center;
+    color: #999;
+}
+
+label>* {
+    pointer-events: none;
+}
+
+#app .bottom  .jiahaoList dl .tupian {
+    background: url(../img/tupian.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+#app .bottom  .jiahaoList dl .wenjian-tupian {
+    background: url(../img/zymy_hx.png) no-repeat center;
+    background-size: 100% 100%;
+}
+
+#app .bottom  .jiahaoList dl input {
+    display: none;
+}
+
+#app .bottom .faceDiv {
+    width: 100%;
+    height: auto;
+}
+
+#app .bottom .faceDiv .faceList {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0.4rem 0.36rem;
+    background: #f5f5f6;
+}
+
+#app .bottom .faceDiv .faceList li {
+    float: left;
+    margin:.8% .72rem;
+}
+
+#app .bottom .faceDiv .faceList li img {
+    display: block;
+    height: 1.8rem;
+    width: 1.8rem;
+}
+
+/*聊天表情*/
+#app .con .ziji .zijiText .Img, #app .con .duifang .duifangText .Img {
+    line-height: 0;
+}
+
+.Img-text {
+    vertical-align: bottom;
+    width: 1.2rem;
+    line-height: 0;
+}
+/*图文列表*/
+#app .con .ImgAndText {
+    clear: both;
+    float: left;
+    padding: .5rem 0;
+}
+
+#app .con .ImgAndText .ImgAndText-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    float: left;
+    overflow: hidden;
+}
+
+#app .con .ImgAndText .ImgAndText-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#app .con .ImgAndText .cardLeft {
+    width: 13.5rem;
+    height: 6rem;
+    background: #fff;
+}
+
+#app .con .ImgAndText .left {
+    display: inline-block;
+    margin-left: 10px;
+    max-width: 20rem;
+    max-height: 10rem;
+    position: relative;
+    background: #fff;
+}
+
+#app .con div .speech .card {
+    width: 100%;
+    padding-top: .5rem;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+/*卡片标题*/
+#app .con div .speech .card .cardTit {
+    padding: .3rem .3rem;
+}
+
+#app .con div .speech .card .cardTit a {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    -webkit-box-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    max-height:34px;
+    line-height: 1rem;
+}
+/*卡片主体*/
+#app .con div .speech .card .cardCon {
+    padding: 0 .3rem;
+    margin: .2rem .3rem;
+    display: flex;
+    flex-flow: row;
+}
+
+#app .con div .speech .card .cardCon .cardTxt {
+    width: 100%;
+    -webkit-box-flex: 1;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    max-height: 34px;
+    font-size: 0.3rem;
+    line-height: 1rem;
+    vertical-align: top;
+    color: #999;
+}
+
+#app .con div .speech .card .cardCon .cardImg {
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-left: 0.533333rem;
+}
+
+#app .con div .speech .card .cardCon .cardImg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+/*卡片底部*/
+#app .con div .speech .card .cardFoot {
+    padding: .2rem .3rem;
+    height: 1rem;
+    line-height: 1rem;
+    border-top: 0.013333rem solid #ccc;
+}
+
+#app .con div .speech .card .cardFoot a {
+    display: inline-block;
+    height: .7rem;
+    line-height: .7rem;
+    vertical-align: top;
+}
+
+#app .con div .speech .card .cardFoot a img {
+    display: inline-block;
+    width: .8rem;
+    height: .8rem;
+    vertical-align: top;
+}
+
+#app .con div .speech .card .cardFoot a span {
+    font-size: 12px;
+    color: #999;
+    vertical-align: middle;
+}
+
+#app .con .ImgAndText .left:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0.8rem;
+    bottom: auto;
+    left: -5px;
+    border-width: 0.3rem 0.3rem 0.3rem 0;
+    border-color: transparent #ccc;
+}
+
+#app .con .ImgAndText .left:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0.8rem;
+    bottom: auto;
+    left: -4px;
+    border-width: 0.3rem 0.3rem 0.3rem 0;
+    border-color: transparent #fff;
+}
+
+#app .con div .left {
+    border: 0.013333rem solid #ccc;
+}
+
+/*医生发图片*/
+#app .con div .speech .picCon {
+    display: block;
+    min-width: 2.5rem;
+    max-width: 10rem;
+}
+
+#app .con div .speech .picCon img {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 2.5rem;
+    max-height: 10rem;
+}
+/*患者发图片*/
+#app .con .rightImg {
+    padding: .5rem 0;
+    clear: both;
+    float: right;
+}
+
+#app .con .rightImg .rightImg-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    float: right;
+    overflow: hidden;
+}
+
+#app .con .rightImg .rightImg-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#app .con .rightImg .pic {
+    border: 0.013333rem solid #ccc;
+    border-radius: 0.106666rem;
+}
+
+#app .con .rightImg .pic {
+    background: #fff;
+}
+
+#app .con .rightImg .right:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0.8rem;
+    bottom: auto;
+    left: auto;
+    right: -6px;
+    border-width: 0.3rem 0 0.3rem 0.3rem;
+    border-color: transparent #ccc;
+}
+
+#app .con .rightImg .right {
+    margin-right: 10px;
+}
+
+#app .con .rightImg .right:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0.8rem;
+    bottom: auto;
+    left: auto;
+    right: -5px;
+    border-width: 0.3rem 0 0.3rem 0.3rem;
+    border-color: transparent #ffffff;
+}
+/*语音聊天*/
+.audio_play_area .icon_audio_default {
+    background: transparent url(../img/icoonloop.png) no-repeat 0 0;
+    width: 18px;
+    height: 25px;
+    vertical-align: middle;
+    display: inline-block;
+    background-size: 54px 25px;
+    background-position: -36px center;
+    position: relative;
+    left: 5px;
+}
+
+.audio_play_area .icon_audio_playing {
+    background: transparent url(../img/icoonloop.png) no-repeat 0 0;
+    width: 18px;
+    height: 25px;
+    vertical-align: middle;
+    display: inline-block;
+    -webkit-background-size: 54px 25px;
+    background-size: 54px 25px;
+    -webkit-animation: audio_playing 1s infinite;
+    background-position: 0px center;
+    display: none;
+    position: relative;
+    left: 5px;
+}
+
+.tips_global {
+    color: #8c8c8c;
+}
+
+.audio_area .audio_length {
+    float: right;
+    font-size: 14px;
+    margin-top: 3px;
+    margin-left: 2rem;
+}
+
+.audio_area .progress_bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: #0cbb08;
+    height: 2px;
+}
+
+.playing .audio_play_area .icon_audio_default {
+    display: none;
+}
+
+.playing .audio_play_area .icon_audio_playing {
+    display: inline-block;
+}
+
+@
+-webkit-keyframes audio_playing {
+30% {
+    background-position: 0px center;
+}
+
+31% {
+    background-position: -18
+    px
+
+    center;
+}
+
+61% {
+    background-position: -18
+    px
+
+    center;
+}
+
+61
+.5 % {
+    background-position: -36px center;
+}
+
+100% {
+    background-position: -36
+    px
+
+    center;
+}
+}
+/*加载样式*/
+#pullDown {
+    background: #f5f5f6;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #888;
+    display: none;
+}
+
+#pullDown .pullDownIcon {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url(../img/loading.png) 0 0 no-repeat;
+    -webkit-background-size: 30px 30px;
+    background-size: 30px 30px;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 250ms;
+    margin: 0 auto;
+}
+
+#pullDown .pullDownIcon {
+    -webkit-transform: rotate(0deg) translateZ(0);
+}
+
+#pullDown.loading .pullDownIcon {
+    background-position: 0 100%;
+    -webkit-transform: rotate(0deg) translateZ(0);
+    -webkit-transition-duration: 0ms;
+    -webkit-animation-name: loading;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes loading {
+    from {
+        -webkit-transform: rotate(0deg)translateZ(0);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg) translateZ(0);
+    }
+}
+/*S5*/
+@media ( min-width :360px) and (max-width :640px) {
+    #app .bottom .faceDiv .faceList li {
+        margin:1.7% .91rem;
+    }
+    #app .bottom .botInput .myInput {
+        max-width:70%;
+    }
+}
+/*6*/
+@media ( min-width :375px) and (max-width :667px) {
+    #app .bottom .faceDiv .faceList li {
+        margin:2.5% .72rem;
+    }
+    #app .bottom .botInput .myInput {
+        max-width:73%;
+    }
+}
+/*6+*/
+@media ( min-device-width : 414px) and (max-device-width : 736px) and
+(-webkit-min-device-pixel-ratio : 3) {
+    #app .bottom .faceDiv .faceList li {
+        margin:2.5% .89rem;
+    }
+    #app .bottom .botInput .myInput {
+        max-width:73%;
+    }
+}
+
+/* 兼容iphone5,因为5和4的屏幕宽度一样 */
+@media ( device-height :568px) and (-webkit-min-device-pixel-ratio:2) {
+    #app .bottom .faceDiv .faceList li {
+        margin:.8% .7rem;
+    }
+
+    #app .con .tip {
+        clear: both;
+        margin: 0 auto;
+        padding: 0.333333rem 0;
+        font-size: 0.346666rem;
+        color: #fff;
+        text-align: center;
+    }
+}
+/*Nexus 5X*/
+@media ( min-device-width : 412px) and (max-device-width : 732px) and
+(-webkit-min-device-pixel-ratio : 2) {
+    #app .bottom .faceDiv .faceList li {
+        margin:2.5% .88rem;
+    }
+    #app .bottom .botInput .myInput {
+        max-width:73%;
+    }
+}

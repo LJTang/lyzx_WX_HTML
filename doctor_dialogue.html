@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <meta charset="UTF-8">
+  <title>患者咨询</title>
+  <!-- 调试阶段不要缓存 -->
+  <!--     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" /> -->
+  <!-- 	<meta http-equiv="Pragma" content="no-cache" /> -->
+  <!-- 	<meta http-equiv="Expires" content="0" /> -->
+  <!-- 调试阶段不要缓存 -->
+  <link rel="stylesheet" type="text/css" href="style/jquery-weui.min.css"/>
+  <!--<link rel="stylesheet" type="text/css" href="style/reset.css"/>-->
+  <!--<link rel="stylesheet" type="text/css" href="style/yishengliebiao.css?v=201809181046"/>-->
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+  <script src="js/iscroll-5.2.0.js"></script>
+  <script src="js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="js/jquery-weui.js"></script>
+  <link rel="stylesheet" href="style/LiaoTian.css?v=201803080957"/>
+  <script src="js/sdk/webim.config.js"></script>
+  <script src="js/sdk/strophe-1.2.8.min.js"></script>
+  <script src="js/sdk/websdk-1.4.11.js"></script>
+  <!-- 大图预览 -->
+  <!--<script src="js/jquery-weui.js"></script>-->
+  <link rel="stylesheet" type="text/css" href="style/weui.min.css"/>
+</head>
+<body>
+<input type="hidden" id="username" value="user11165" >
+<input type="hidden" id="password" value="294993829" >
+<input type="hidden" id="sendto" value="doctor124" >
+<input type="hidden" id="doctorName" value="李龙测试" >
+<input type="hidden" id="userId" value="11165">
+<input type="hidden" id="coreOpenId" value="oehVS1NJSXLZcpqWNJgVY4ySDVYQ">
+<input type="hidden" id="nodeOpenId" value="o3Yk8wZuhjpQqr1hZPGIySKhwXIQ">
+<input type="hidden" id="drugStoreId" value="73">
+<input type="hidden" id="doctorId" value="124">
+<div id="app">
+  <!-- 加载样式,下拉加载 -->
+  <div id="pullDown" class="">
+    <span class="pullDownIcon"></span><span class="pullDownLabel"></span>
+  </div>
+
+  <div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+  </div>
+  <!-- 滑动区-->
+  <div id="hua">
+    <div id="chatRecordDiv" class="con" style="transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1); transition-duration: 0ms; transform: translate(0px, 0px) translateZ(0px);">
+    </div>
+  </div>
+  <!-- 底部输入框-->
+  <div class="bottom" id="bottom_id" style="position: relative;bottom: 0px;">
+    <!-- 输入框 加号 更多-->
+    <div class="botInput"id="botInputId">
+      <div class="myInput">
+        <div class="input" contenteditable="true" id="myInput-txt"></div>
+      </div>
+      <div class="face" id="face">
+        <i class="biaoqing"></i>
+      </div>
+      <div class="more" style="display:block" id="more">
+        <i class="jiahao"></i>
+      </div>
+      <div class="send" style="display:none" id="send">
+        <a href="javascript:;">发送</a></div>
+    </div>
+    <!-- 底部菜单区域 -->
+    <div class="faceDiv none" style="display:none" id="bottom_sunId">
+      <!-- 表情内容-->
+      <ul class="faceList" id="faceUlId">
+      </ul>
+      <!-- 加号内容 -->
+      <div class="jiahaoList" id="jiahaoDivId">
+        <dl class="photo">
+          <label for="photo">
+            <dt class="tupian"></dt>
+            <dd>图片</dd></label>
+          <input type="file" id="photo" name="photo" accept="image/*"/></dl>
+        <dl class="wenjian">
+          <label for="buyDrugs">
+            <dt class="wenjian-tupian"></dt>
+            <dd>找药买药</dd></label>
+          <input type="file" id="buyDrugs" name="buyDrugs" /></dl>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="js/face20180108.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/weixinAudio.js?v=1" type="text/javascript" charset="utf-8"></script>
+<script src="js/iscroll-5.2.0.js"></script>
+<script type="text/javascript">
+
+  var ctx = "";//项目根目录
+  var userPhotoUrl = "http://res.liangyizaixian.com/wxtouxiang/o3Yk8wZuhjpQqr1hZPGIySKhwXIQ.jpg";//用户头像
+  var doctorPhotoUrl = "/img/show?objectId=5ad80ddb01e7df6b11b71fc4";//医生头像
+  //药品详情页必须字段
+  var nodeOpenId = 'o3Yk8wZuhjpQqr1hZPGIySKhwXIQ';
+  var coreOpenId = 'oehVS1NJSXLZcpqWNJgVY4ySDVYQ';
+  var doctorId = '124';
+  var doctorName = $("#doctorName").val();
+  var doctorUserId = '6423';
+  var touxiangL='/static/easemob/img/doctorHead.png';
+  if(doctorPhotoUrl != null && doctorPhotoUrl != 'undefined' && doctorPhotoUrl != ''){
+    touxiangL = doctorPhotoUrl;
+  }
+  var userId = $("#username").val();
+  var userPassword = $("#password").val();
+  var userNickname='用户昵称';
+  var toId = $("#sendto").val();
+  var toNickname = $("#doctorName").val()+"医生";
+  console.log(toNickname+",android");
+  // 默认头像
+  var touxiangR='/static/easemob/img/userHead.png';
+  if(userPhotoUrl != null && userPhotoUrl != 'undefined' && userPhotoUrl != ''){
+    touxiangR = userPhotoUrl;
+  }
+  var medicineImg = '/static/easemob/img/nodrug3x.png';//多药推荐默认3倍图
+  //公众号id
+  var oaId;
+  //卡片默认图
+  var initCardImg='/static/easemob/img/drugDefault.png';
+  var initCardBotImg='/static/easemob/img/LOGO-20180307.jpg';
+  var initCardBot = '良医在线';
+  //文件默认图
+  var initFielBotImg='/static/easemob/img/LOGO-20180307.jpg';
+  //链接状态提示内容 连接成功 请开始对话
+  var tipOk='温馨提示:线上咨询不能代替就诊,医生建议仅供参考.';
+  var tipOver='连接已断开,请刷新页面或者<a href="/web/hxtalk?uid='+$("#userId").val()+'&did='+$("#doctorId").val()+'&nodeOpenId='+nodeOpenId+'">重新加载</a>';//这个被踢掉了
+  var tipOffline=tipOver;//断网
+  var tipFlag = false;//连接状态标志,只有当连接环信成功的时候,重置成true
+  //上传图片状态
+  var loadImg='/static/easemob/img/loading.gif';
+  var errImg='/static/easemob/img/imgerr.png';
+  var userMsgUrl='';
+  var conn; //环信连接对象 全局
+  var group; //环信连接对象 全局
+  var img_url;//用户发送图片消息环信返回图片地址
+  var pageIndex = 1;//默认第一页
+  var isBreak = false;//连接断开是否已经通知过了
+  initScroll();
+  //是否接受环信的消息,医生刚发送的消息，如果立即点开页面的话,环信会把消息通知过来,这样同一个消息就会显示两条
+  var getHxMsgFlag = false;
+  //过1s之后再接受消息
+  setTimeout("initCountTime()", 1000);
+  function initCountTime(){
+    console.log("可以接受消息了");
+    getHxMsgFlag = true;
+  }
+  //环信用户登录操作
+  getHxUser(userId, toId);
+  //获取微信code拼接地址,公众号id
+  function getHxUser(username,toId){
+    //打开聊天获取用户基本信息
+    hx_username = userId;
+    hx_password = userPassword;
+    hx_init(hx_username,hx_password,toId);//初始化环信用户并登录环信平台
+  }
+  //打开聊天获取用户基本信息
+  function getUserMsg(userMsgUrl){
+    $.ajax({
+      type:"get",
+      url:userMsgUrl,
+      async:true,
+      success:function(msg){
+        userId=msg.openid;
+        userNickname=msg.nickname;
+        touxiangR=msg.headimurl;
+      },
+      error:function(err){
+//			alert(JSON.stringify(err))
+      }
+    });
+  }
+  //初始化环信用户并登录环信平台+处理环信消息
+  function hx_init(userId, userPassword, toId) {
+    document.title = "正在与" + toNickname + "对话"; //修改标题
+    /* 函数内直接引用 */
+    group = userId + ':' + toId; //设置当前聊天组 key: "user1:user2" 当前用户和user2聊天
+    /* 函数内直接引用 */
+    //创建连接对象
+    conn = new WebIM.connection({
+      https: WebIM.config.https,
+      url: WebIM.config.xmppURL,
+      isAutoLogin: WebIM.config.isAutoLogin,
+      isMultiLoginSessions: WebIM.config.isMultiLoginSessions
+    });
+    //用户登录
+    var options = {
+      apiUrl: WebIM.config.apiURL,
+      user: userId, //登录用户名
+      pwd: userPassword, //登录密码
+      appKey: WebIM.config.appkey
+    };
+    conn.open(options);
+    //消息回调函数
+    conn.listen({
+      onOpened: function(message) {
+        showTip(tipOk);
+        tipFlag = true;
+      }, //连接成功回调
+      onClosed: function(message) {
+        //断开连接的时候环信通知了两次
+        if(!isBreak){
+          showTip(tipOver);
+          isBreak = true;
+        }
+        tipFlag = false;
+      },
+      /*  收到文本消息  */
+      onTextMessage: function(message) {
+        if(!getHxMsgFlag){
+          console.log("过一会执行onTextMessage");
+          return false;
+        }
+        //TODO
+        console.log(message)
+        var msgType;//拓展消息类型
+        var system;//拓展消息来源（ios or adnroid）
+        if(message.ext.type){
+          msgType=message.ext.type;
+        }
+        if(message.from == toId) { //处理当前的聊天消息并缓存
+          if(msgType=="medicine"){
+            //多药
+            var medicine = message.ext.medicine;
+            if(typeof medicine == 'string'){
+              medicine = JSON.parse(medicine);
+            }
+            showMedicine(medicine,"",true,null);
+          }else if(msgType=="card"){
+            //单药
+            var card = message.ext.card;
+            if(typeof card == 'string'){
+              card = JSON.parse(card);
+            }
+            showCardMsg(card,"",true,null);
+          }else{
+            //文本消息
+            //显示接受到的文本消息消息
+            showOppositeTxt(message.data,"",true,null);
+          }
+
+        }
+      },
+      /*  收到表情消息  */
+      onEmojiMessage: function(message) {},
+      /*  收到图片消息  */
+      onPictureMessage: function(message) {
+        if(!getHxMsgFlag){
+          console.log("过一会执行onPictureMessage");
+          return false;
+        }
+        if(message.from == toId) { //处理当前的聊天消息并缓存
+          showOppositeImg(message.url,"",true,null); //显示接受到的图片消息消息；
+        }
+      },
+      /*  收到文件消息   */
+      onFileMessage: function(message) {},
+      //收到命令消息 推送
+      onCmdMessage: function(message) {},
+      onAudioMessage: function(message) {
+        if(!onAudioMessage){
+          console.log("过一会执行onPictureMessage");
+          return false;
+        }
+        //收到音频消息
+        downhxAudio(message,1);
+      },
+      onLocationMessage: function(message) {}, //收到位置消息
+      onVideoMessage: function(message) {}, //收到视频消息
+      onPresence: function(message) {}, //收到联系人订阅请求、处理群组、聊天室被踢解散等消息
+      onRoster: function(message) {}, //处理好友申请
+      onInviteMessage: function(message) {}, //处理群组邀请
+      onOnline: function() {}, //本机网络连接成功
+      onOffline: function() {
+        if(!isBreak){
+          showTip(tipOver);
+          isBreak = true;
+        }
+        tipFlag = false;
+      }, //本机网络掉线
+      onError: function(message) {}, //失败回调
+      onBlacklistUpdate: function(list) {} //黑名单变动
+    });
+    /* 登录后加载已缓存的数据 */
+    getChatRecordList(pageIndex++,"","before");
+    goBottom();
+    //如果有草稿消息,显示到文本框上面
+    var draftMsg = localStorage.getItem("draftMsg_"+toId);
+    //手机上无法主动调出软键盘
+    if(draftMsg !=null && draftMsg!= ""){
+      //处理发送按钮样式
+      $("#myInput-txt").html(draftMsg);
+      //切换按钮
+      $("#send").show();
+      $("#more").hide();
+      //光标定位到最后
+// 		po_Last_Div($('.input').eq(0)[0]);
+      //自动弹出键盘 无效
+// 		$('.input').eq(0).trigger("click");
+      //高度处理
+    }
+  }
+  //定位div(contenteditable = "true")
+  function po_Last_Div(obj) {
+    if (window.getSelection) {//ie11 10 9 ff safari
+      obj.focus(); //解决ff不获取焦点无法定位问题
+      var range = window.getSelection();//创建range
+      range.selectAllChildren(obj);//range 选择obj下所有子内容
+      range.collapseToEnd();//光标移至最后
+    }
+    else if (document.selection) {//ie10 9 8 7 6 5
+      var range = document.selection.createRange();//创建选择对象
+      //var range = document.body.createTextRange();
+      range.moveToElementText(obj);//range定位到obj
+      range.collapse(false);//光标移至最后
+      range.select();
+    }
+  }
+  //处理历史消息+显示对方消息
+
+  function showTip(tipMsg){
+    $('#chatRecordDiv').eq(0).append('<div class="tip"><span>'+tipMsg+'</span></div>');
+    goBottom();
+  }
+
+  function showKong(){
+    $(".kong").remove();
+    $('#chatRecordDiv').eq(0).append('<div class="kong">&nbsp</div>');
+    setTimeout(function(){goBottom();},500);
+  }
+  //格式化时间
+  function crtTimeFtt() {
+    var date = new Date();
+    return date.getFullYear() +
+      '-' + (date.getMonth() + 1) +
+      '-' + date.getDate() +
+      ' ' + date.getHours() +
+      ':' + date.getMinutes() +
+      ':' + date.getSeconds();
+  }
+  //将emoji表情字符串替换成图片
+  function replace_em(str) {
+    var reg = /\[\:\GB\]|\[\:\G\P\]|\[\:\G\L\]|\[\:\L\L\]|\[\:\L\V\]|\[\:\G\G\]|\[\:\w\o\]|\[\:\:\w\]|\[\:\@\o\]|\[\:\:\d\]|\[\:\:\D\]|\[\:\l\(\]|\[\:\:\|\]|\[\:\:\@\]|\[\:\:\8\]|\[\:\o\|\]|\[\:\:$\]|\[\:\:\>\]|\[\:\:\O\]|\[\:\o\o\]|\[\:\:\+\]|\[\:\:\<\]|\[\:\:\(\]|\[\:\:\~\]|\[\:\:\B\]|\[\:\:\z\]|\[\:\:\p\]|\[\:\@\p\]|\[\:\@\D\]|\[\:\:\)\]|\[\:\:\X\]|\[\:\:\T\]/g;
+    str = str.replace(reg, function(a){
+      return faceData[a];
+    });
+    return str;
+  }
+
+  function getParameterByName(name, url) {
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+    var results = regex.exec(url);
+// 	console.log("results="+results[2].replace(/\+/g, " "));
+    results = escape(results);
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+  function showMedicine(msg,type,showBottomFlag,_chatTime){
+    var meId='me'+new Date().getTime();
+    var listCon=JSON.stringify(msg.medicineData)
+    if(msg.medicineImg != 'undefined' && msg.medicineImg != null && msg.medicineImg != ''){
+      medicineImg = msg.medicineImg;
+    }
+    //需要重新赋值卡片url,不要到药品详情页面,直接到订单预览页面
+    var _prescriptionPush = getParameterByName("prescriptionPush",msg.medicineUrl);
+    var _prescriptionPushArray = $.parseJSON(_prescriptionPush);
+    var drugArray = new Array();
+    for(var i=0;i<_prescriptionPushArray.length;i++){
+      var drugObject = new Object();
+      var o = _prescriptionPushArray[i];
+      drugObject.drugStockId = o.drugstock_id;
+      drugObject.num = o.recommandCount;
+      drugArray[i]=drugObject;
+    }
+    //encodeURI(JSON.stringify(drugArray)
+// 	console.log(JSON.stringify(drugArray));
+    msg.medicineUrl = "/web/h5/toAffirmOrder?nodeOpenId="+nodeOpenId+"&doctorId="+doctorId+"&drugs="+encodeURI(JSON.stringify(drugArray));
+    //需要重新赋值卡片url,不要到药品详情页面,直接到订单预览页面
+    //加入到内容区
+    var _html = '<div class="ImgAndText">'+
+      '	<div class="ImgAndText-img">'+
+      '    	<img src="'+touxiangL+'" alt=""/>'+
+      '	</div>'+
+      '	<div class="speech left cardLeft">'+
+      '   	<div class="card" onclick="toCardUrl(\''+msg.medicineUrl+'\');">'+
+      '       	<div class="cardTit">'+
+      '           	<a class="cardUrl" href="javascript:;">'+msg.medicineTit+'</a>'+
+      '       	</div>'+
+      '       	<div class="cardCon">'+
+      '       		<a class="cardUrl cardTxt" href="javascript:;">'+msg.medicineNam+
+      '           	<a class="cardUrl cardImg" href="javascript:;">'+
+      '           		<img src="'+medicineImg+'" alt=""/>'+
+      '           	</a>'+
+      '       	</div>'+
+      '       	<div class="cardFoot">'+
+      '       		<a href="javascript:;">'+
+      '           		<img src="'+initCardBotImg+'" alt=""/>'+
+      '               	<span>'+initCardBot+'</span>'+
+      '           	</a>'+
+      '       	</div>'+
+      '   	</div>'+
+      '	</div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+    showKong();
+    $('#'+meId).on('click',function(){
+      var listcon=JSON.stringify($('#'+meId).data('listcon'))
+      localStorage.listCon=JSON.stringify($('#'+meId).data('listcon'));
+      location.href=msg.medicineUrl;
+    })
+  }
+
+  function showCardMsg(card,type,showBottomFlag,_chatTime){
+    if(card.cardImg!=''){
+      initCardImg=card.cardImg;
+    }
+    if(card.cardUrl.indexOf("nodeOpenId")==-1){
+      card.cardUrl = card.cardUrl + "&nodeOpenId=" + nodeOpenId;
+    }
+    if(card.cardUrl.indexOf("coreOpenId")==-1){
+      card.cardUrl = card.cardUrl + "&coreOpenId=" + coreOpenId;
+    }
+    if(card.cardUrl.indexOf("doctorId")==-1){
+      card.cardUrl = card.cardUrl + "&doctorId=" + doctorId;
+    }
+    //如果是单药类型的,需要重新赋值卡片url,不要到药品详情页面,直接到订单预览页面
+    if(card.cardType != null && card.cardType == "drugDetail"){
+      var drugArray = new Array();
+      var drugObject = new Object();
+      drugObject.drugStockId=card.cardUrl.substring(card.cardUrl.lastIndexOf("/") + 1, card.cardUrl.lastIndexOf("?"));
+      var _num = card.drugNum;
+      if(_num == null || _num == ""){
+        _num = 1;
+      }
+      drugObject.num = _num;//默认是一个
+      drugArray[0]=drugObject;
+      card.cardUrl = "/web/h5/toAffirmOrder?nodeOpenId="+nodeOpenId+"&doctorId="+doctorId+"&drugs="+encodeURI(JSON.stringify(drugArray));
+    }
+    //加入到内容区
+    var _html = '<div class="ImgAndText">'+
+      '	<div class="ImgAndText-img">'+
+      '    	<img src="'+touxiangL+'" alt=""/>'+
+      '	</div>'+
+      '	<div class="speech left cardLeft">'+
+      '   	<div class="card" onclick="toCardUrl(\''+card.cardUrl+'\');">'+
+      '       	<div class="cardTit">'+
+      '       		<a class="cardUrl" href="javascript:;">'+card.cardTit+'</a>'+
+      '       	</div>'+
+      '       	<div class="cardCon">'+
+      '       		<a class="cardUrl cardTxt" href="javascript:;">'+card.cardTit+' '+card.cardCon+
+      '           	<a class="cardUrl cardImg" href="javascript:;">'+
+      '           		<img src="'+initCardImg+'" alt=""/>'+
+      '           	</a>'+
+      '       	</div>'+
+      '       	<div class="cardFoot">'+
+      '       		<a href="javascript:;">'+
+      '           		<img src="'+initCardBotImg+'" alt=""/>'+
+      '               	<span>'+initCardBot+'</span>'+
+      '           	</a>'+
+      '       	</div>'+
+      '    	</div>'+
+      '	</div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+    showKong();
+  }
+
+  function showOppositeTxt(msg,type,showBottomFlag,_chatTime){
+    //替换文本(表情->图片)
+    var msgCon = replace_em(msg);
+    var _html = '<div class="duifang">'+
+      '       <div class="duifangImg">'+
+      '    <img src="'+touxiangL+'" alt=""/>'+
+      '</div>'+
+      '<div class="duifangText">'+
+      '    <div class="speech txtP">'+msgCon+
+      '    </div>'+
+      '</div>'+
+      '<div class="duifangR"></div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+  }
+
+  function showOppositeImg(imgUrl,type,showBottomFlag,_chatTime){
+    var _html = '<div class="ImgAndText">'+
+      '        <div class="ImgAndText-img">'+
+      '    <img src="'+touxiangL+'" alt=""/>'+
+      '</div>'+
+      '<div class="speech left pic">'+
+      '    <a href="javascript:;" class="picCon">'+
+      '        <img src="'+imgUrl+'" onclick="pcviewImg(this);"/>'+
+      '    </a>'+
+      '</div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+    if(showBottomFlag){
+      showKong();
+    }
+  }
+
+  function downhxAudio(message,type){
+    var options;
+    if(type == 1){
+      options = { url: message.url };
+    }else{
+      options = { url: message.url,accessToken:message.accessToken };
+    }
+    options.onFileDownloadComplete = function ( response ) {
+      //音频下载成功，需要将response转换成blob，使用objectURL作为audio标签的src即可播放。
+      var objectURL = WebIM.utils.parseDownloadResponse.call(conn, response);
+      console.log("音频下载成功,objectURL="+objectURL);
+      showOppositeAudio(objectURL,"",true,null); //显示接受消息；
+    };
+
+    options.onFileDownloadError = function (response) {
+      //音频下载失败
+      console.log("音频下载失败,response="+JSON.stringify(response));
+    };
+
+    //通知服务器将音频转为mp3
+    options.headers = {
+      'Accept': 'audio/mp3'
+    };
+
+    WebIM.utils.download.call(conn, options);
+  }
+
+  function showOppositeAudio(url,type,showBottomFlag,_chatTime) {
+    //截取js最后/的字符
+    var classId = url.substring(url.lastIndexOf("/")+1);
+    //加入到内容区
+    var _html = '<div class="duifang">'+
+      '        <div class="duifangImg">'+
+      '    <img src="'+touxiangL+'" alt=""/>'+
+      '</div>'+
+      '<div class="duifangText">'+
+      '    <div id="audio_'+classId+'" class="speech txtP">'+
+      '        <audio src="'+url+'" id="media" width="1" height="1" preload></audio>'+
+      '        <span id="audio_area" class="db audio_area">'+
+      '        <span class="audio_wrp db">'+
+      '        <span class="audio_play_area">'+
+      '            <i class="icon_audio_default"></i>'+
+      '            <i class="icon_audio_playing"></i>'+
+      '        </span>'+
+      '        <span id="audio_length" class="audio_length tips_global"></span>'+
+      '        <span id="audio_progress" class="progress_bar" style="width: 0%;"></span>'+
+      '        </span>'+
+      '        </span>'+
+      '    </div>'+
+      '</div>'+
+      '<div class="duifangR"></div>'+
+      '</div>';
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+
+    if(type == "before"){
+      var _obj = $('#chatRecordDiv').children(".duifang").eq(0);
+    }else{
+      var _obj = $("#audio_"+classId);
+    }
+    _obj.weixinAudio({
+      autoplay:false
+    });
+  }
+  //上一条有效信息是否是聊天计费信息
+  function isChatFeeDiv(_type,_obj){
+    //如果上一条消息是聊天计费消息,不用重复展示
+    var _lasto
+    if(_type == 1){
+      //提示信息
+      _lasto = _obj.prev();//同级的前一个元素
+    }else{
+      _lasto = $("#chatRecordDiv").children("div:last-child");
+    }
+    if(_lasto.length>0){
+// 		console.log("存在:"+_lasto.attr("class"));
+      var _class=_lasto.attr("class");
+      if(_class == "duifang"){
+        var ulObj = _lasto.find(".zhifu_div");
+        if(ulObj.length>0){
+          return false;
+        }
+      }else if(_class == "tip"){
+        //如果是提示信息取上一条
+        return isChatFeeDiv(1,_lasto);
+      }else if(_class == "kong"){
+        //如果是提示信息取上一条
+        return isChatFeeDiv(1,_lasto);
+      }
+    }
+    return true;
+  }
+
+  function showTalkFee(type,showBottomFlag,_chatTime){
+    var _showFlag = isChatFeeDiv();
+    if(_showFlag){
+// 		console.log("显示计费信息");
+      var _userId = $("#userId").val();
+      var _doctorId = $("#doctorId").val();
+      var contentDiv = '<ul class="zhifu_div">'+
+        '	<li>订单未支付提醒:</li>'+
+        '  <li>您好!'+doctorName+'医生已经开通图文咨询付费,立即支付,即可再次咨询医生.</li>'+
+        '	<li>立即升级服务,不用去医院,不用排队挂号,足不出户联系医生,节省时间和精力.</li>'+
+        '</ul>'+
+        '<p>'+
+        '	<a href="/h5/order/toTalkPay?userId='+_userId+'&doctorId='+_doctorId+'">【立即支付】</a>'+
+        '</p>';
+      showOppositeTxt(contentDiv,type,true,_chatTime);
+      //消息记录入库
+//     insertChatMsg("chatfee","chatfee","2");
+    }
+  }
+
+
+  function showPersonalTxt(msg,type,showBottomFlag,_chatTime){
+    //替换文本(表情->图片)
+    var msgCon = replace_em(msg);
+    var _html = '<div class="ziji">'+
+      '	<div class="zijiImg">'+
+      '   	<img src="'+touxiangR+'" alt=""/>'+
+      '	</div>'+
+      '	<div class="zijiText">'+
+      '   	<div class="speech txtP">'+msgCon+
+      '   	</div>'+
+      '	</div>'+
+      '	<div class="zijiL"></div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+  }
+
+  function showPersonalImg(imgUrl,type,showBottomFlag,_chatTime){
+    var _html = '<div class="rightImg">'+
+      '        <div class="rightImg-img">'+
+      '    <img src="'+touxiangR+'" alt=""/>'+
+      '</div>'+
+      '<div class="speech right pic">'+
+      '    <a class="picCon" href="javascript:;">'+
+      '        <img src="'+imgUrl+'" onclick="pcviewImg(this);"/>'+
+      '    </a>'+
+      '</div>'+
+      '</div>';
+    //回显到聊天记录div
+    showChatRecord(_html,type,showBottomFlag,_chatTime);
+    if(showBottomFlag){
+      showKong();
+    }
+  }
+
+  function toCardUrl(url){
+    if(url!=null && url!=""){
+      window.location.href=url;
+    }
+  }
+
+  function goBottom(){
+    huaScroll.refresh();
+    var h1 = $('#chatRecordDiv').height();
+    var h2 = $('#hua').height();
+    if(h1 > h2){
+      huaScroll.scrollTo(0,-h1+h2);//滚到底部
+    }
+  }
+  var _th1 = 0;//手指开始滑动接触的Y坐标
+  var _th2 = 0;//手指结束滑动接触的Y坐标
+  function initScroll(){
+    var pullDownOffset = $("#pullDown").height();
+    huaScroll = new IScroll('#hua',{
+      mouseWheel : true,
+      click:true,
+      probeType : 3,
+      topOffset: pullDownOffset
+    });
+    huaScroll.on('scrollEnd',function(){
+      if(-this.y <= 5 && (_th2-_th1)>100){
+        if(!isAll){
+          //有数据了
+          $("#pullDown").show();
+          $("#pullDown").addClass("loading");
+        }
+        setTimeout(function(){
+          getChatRecordList(pageIndex++,"","before")
+        },2000);
+        hua_taphold_flag = false;
+      }
+    });
+  }
+  $('#hua').on('touchstart',function(e) {
+    var touch = e.originalEvent.targetTouches[0];
+    _th1 = touch.pageY;
+  });
+  $('#hua').on('touchend',function(e) {
+    var touch = e.originalEvent.changedTouches[0];
+    _th2 = touch.pageY;
+  });
+  //获取的是窗口可视区域高度
+  var initWindowHeight = $(window).height();
+  var initBottomHeight = $("#bottom_id").height(); //底部footer框高度
+  $('body').height(initWindowHeight);//设定body的高度
+  var hisName = "keyboard";//键盘高度关键字
+  var hisHeight = localStorage.getItem("hisHeight_"+hisName) == null ? 0:parseInt(localStorage.getItem("hisHeight_"+hisName)); //键盘历史高度
+  // var hisHeight = 250;
+  function _preventDefault(e) {
+    e.preventDefault();
+  }
+
+  $('#face').click(function() {
+    if($('#faceUlId li').length == 0) {
+      //加载表情列表
+      for(var i in data) {
+        $('#faceUlId').append('<li data-con="' + data[i].con + '"><img alt="' + data[i].con + '" src="'+data[i].src+'"/></li>');
+      }
+    }
+    if (parseInt(hisHeight) == 0) {
+      hisHeight = 250
+    }
+    adjustInputH();
+    $('#bottom_sunId').show();
+    $('#faceUlId').show();
+    $('#jiahaoDivId').hide();
+    // 恢复滑动
+    document.body.style.overflow = 'auto';
+    window.removeEventListener('touchmove', _preventDefault);
+    //滑动到底部
+    goBottom();
+  });
+
+  $('#more').click(function() {
+    if (parseInt(hisHeight) == 0) {
+      hisHeight = 250
+    }
+    adjustInputH();
+    $('#bottom_sunId').show();
+    $('#faceUlId').hide();
+    $('#jiahaoDivId').show();
+    // 恢复滑动
+    document.body.style.overflow = 'auto';
+    window.removeEventListener('touchmove', _preventDefault);
+    //滑动到底部
+    goBottom();
+  });
+
+  $('#myInput-txt').eq(0).focus(function() {
+    $('#bottom_sunId').hide();
+    adjustInputH();
+    // 禁止滑动
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('touchmove', _preventDefault);
+    //滑动到底部
+    goBottom();
+  });
+  //输入框value变化
+  var contentHeight = $("#myInput-txt").height(); //聊天框高度,键盘按下上一次的高度
+  $('#myInput-txt').eq(0).keyup(function(e) {
+    var _contentHeight = $("#myInput-txt").height();//当前的高度
+    if(contentHeight!=_contentHeight){
+      //高度变化
+      adjustInputH();
+      contentHeight = _contentHeight;
+    }
+    //输入框数值
+    var _content = $('#myInput-txt').html();
+    //草稿消息
+    cacheLocalMsg();
+    if (_content != null && _content != "") {
+      //发送按钮显示
+      $("#send").show();
+      $("#more").hide();
+    } else {
+      //发送按钮隐藏
+      $("#send").hide();
+      $("#more").show();
+    }
+  });
+  //监听输入框高度变化
+  //调整底部高度 不变的是底部距离顶部的高度
+
+  function adjustInputH() {
+    $('#bottom_id').height($("#botInputId").outerHeight(true)+hisHeight);
+  }
+  //浏览器尺寸变化响应事件
+  window.onresize = function() {
+    var initWindowHeight1 = $(window).height(); //键盘收起时候的高度
+    var _tempanelH = initWindowHeight - initWindowHeight1;
+    if (_tempanelH != 0 && _tempanelH != parseInt(hisHeight)) {
+      //键盘弹出
+      hisHeight = _tempanelH;
+      localStorage.setItem("hisHeight_"+hisName, hisHeight);
+      //重置底部样式高度
+      $('#myInput-txt').trigger("focus");
+    }else if(_tempanelH==0&&$("#bottom_sunId").is(":hidden")){
+      //底部表情div隐藏-->收起键盘
+      $('#myInput-txt').trigger("blur");
+      $('#hua').trigger("click");
+    }
+  }
+  //点击聊天记录
+  $('#hua').click(function() {
+    setTimeout(function(){resetBottomH();},200);
+  })
+  //回复底部div
+  function resetBottomH() {
+    //收起键盘
+    $('#myInput-txt').trigger("blur");
+    //收起键盘,回复底部div初始高度
+    $('#bottom_id').height($("#botInputId").outerHeight(true));
+    // 恢复滑动
+    document.body.style.overflow = 'auto';
+    window.removeEventListener('touchmove', _preventDefault);
+  }
+  //处理输入框消息,将所有的img标签元素替换成code码
+  function disposeInputMsg() {
+    var msg_content = $('#myInput-txt').eq(0).html(); //获取文本内容
+    var reg = /<img[^>]+>/g;
+    var returnMsg = msg_content.replace(reg,
+      function(a) {
+        a = a.substring(a.indexOf("=") + 2, a.indexOf("]") + 1);
+        return a;
+      });
+    return returnMsg;
+  }
+  function sendTxtToHX(msgCon){
+    var id = conn.getUniqueId();                 // 生成本地消息id
+    var msg = new WebIM.message('txt', id);      // 创建文本消息
+    msg.set({
+      msg: msgCon,                  // 消息内容
+      to: toId,                       // 接收消息对象（用户id）
+      roomType: false,
+      success: function (id, serverMsgId) {
+        //回显自己的文本消息
+        //替换文本(表情->图片)
+        msgCon = replace_em(msgCon);
+        showPersonalTxt(msgCon,"",true,null);
+        //清空文本框
+        $('#myInput-txt').eq(0).html("");
+        //消息发送成功,清楚缓存的草稿消息
+        localStorage.removeItem("draftMsg_"+toId);
+      },fail: function(e){
+        console.log("Send private text error");
+      }
+    });
+    msg.body.chatType = 'singleChat';
+    conn.send(msg.body);
+  }
+  //点击发送按钮发送文本+表情
+  $("#send").click(function() {
+    if(!tipFlag){
+      showTip("服务器连接失败,请稍等片刻或者重新打开页面.");
+      return;
+    }
+    var msg_content = disposeInputMsg(); //获取文本内容,这个有环信可以解析到的表情+文字
+    if (msg_content.length == 0) {
+      return;
+    }
+    //查询聊天状态+更新聊天时间
+    $.ajax({
+      type: "POST",
+      url: "/web/queryChatStatus",
+      data: {
+        "doctorUserId": doctorUserId
+      },
+      async : false,
+      success: function(data) {
+        if(data == "Y"){
+          //显示文本内容到聊天框
+          //将消息发送到环信
+          sendTxtToHX(msg_content);
+          //消息记录入库
+          insertChatMsg("text",msg_content);
+          //切换按钮
+          $("#send").hide();
+          $("#more").show();
+          //重置参数
+          _bottomHeight = hisHeight;
+          _initBottomHeight = initBottomHeight;
+          //发送的时候,底部保持不变,输入框存在or表情存在
+          if($("#bottom_sunId").is(":hidden")){
+            //输入框存在
+            //聚焦输入框
+            $('#myInput-txt').trigger("focus");
+          }else{
+            //表情存在,隐藏
+            $('#face').trigger("click");
+          }
+        }else if(data == "N"){
+          showTalkFee();
+        }
+      }
+    });
+  });
+  function changeBottomHeight(){
+    //重置底部高度
+    $('#myInput-txt').trigger("blur");
+    $('#hua').trigger("click");
+    //滑动到底部
+    goBottom();
+  }
+  //点击表情显示到输入框文本中
+  $('#faceUlId').on('click', "li",function() {
+    //定义图片大小 class="Img-text"
+    var faceHtml = $(this).html(); //<img src="img/haixiu.png" alt="">
+    faceHtml = faceHtml.substring(0, faceHtml.indexOf("src=")) + " class='Img-text'" + faceHtml.substring(faceHtml.indexOf("src="));
+    $('#myInput-txt').eq(0).html($('#myInput-txt').eq(0).html() + faceHtml);
+    //切换按钮
+    $("#send").show();
+    $("#more").hide();
+  });
+  //找药买药
+  $('#buyDrugs').eq(0).click(function(e){
+    e.preventDefault();
+    //跳转到找要买药页面
+    location = "/web/h5/drug/category?drugstoryid="+$("#drugStoreId").val()+"&parentid=0&level=1&doctorId="+$("#doctorId").val()+"&coreOpenId="+$("#coreOpenId").val()+"&nodeOpenId="+$("#nodeOpenId").val();
+  })
+  //选择图片按钮点击事件
+  var b = false;
+  $('#photo').change(function(e){
+    if(!tipFlag){
+      showTip("服务器连接失败,请稍等片刻或者重新打开页面.");
+      return;
+    }
+    var _this = this;
+    //查询聊天状态+更新聊天时间
+    $.ajax({
+      type: "POST",
+      url: "/web/queryChatStatus",
+      data: {
+        "doctorUserId": doctorUserId
+      },
+      async : false,
+      success: function(data) {
+        if(data == "Y"){
+          b=true;
+        }else if(data == "N"){
+          showTalkFee();
+          b=false;
+        }else{
+          b=false;
+        }
+      }
+    });
+    if(b){
+      var photoHtml = $('#photo').val().trim();
+      if(photoHtml !='' && photoHtml != "null"){
+        //用户体验更好的实现方式，先加载本地的图片给用户展示
+        showPersonalImg(getObjectURL(this),null,true,null);
+        //滑动到底部 无效
+// 		    goBottom();
+        $('#hua').trigger("click");
+        sendImg();
+      }
+    }
+  });
+  //发送图片到环信
+  function sendImg() {
+    var id = conn.getUniqueId(); // 生成本地消息id
+    var msg = new WebIM.message('img', id); // 创建图片消息
+    var input = document.getElementById('photo'); // 选择图片的input   id必填
+    var file = WebIM.utils.getFileUrl(input); // 将图片转化为二进制文件
+    var allowType = {
+      'jpg': true,
+      'gif': true,
+      'png': true,
+      'bmp': true,
+      'jpeg': true
+    };
+    //var img_url;
+    if (file.filetype.toLowerCase() in allowType) {
+      var option = {
+        apiUrl: WebIM.config.apiURL,
+        file: file,
+        to: toId,
+        // 接收消息对象
+        roomType: false,
+        chatType: 'singleChat',
+        onFileUploadError: function() { // 消息上传失败
+          showTip('图片消息发送失败');
+        },
+        onFileUploadComplete: function(aa) { // 消息上传成功
+//                 showTip('上传成功');
+          img_url = aa.uri + "/" + aa.entities[0].uuid;
+//                 showPersonalImg(img_url,null,true,null);
+        },
+        success: function() {
+          // 消息发送成功
+          //消息记录入库
+          insertChatMsg("image",img_url);
+          changeBottomHeight();
+          showKong();
+        },
+        flashUpload: WebIM.flashUpload
+      };
+      msg.set(option);
+      conn.send(msg.body);
+      $('#photo').val('');
+    }
+  }
+  //获取图片本地上传路径
+  function getObjectURL(file) {
+    //return window[window.webkitURL ? 'webkitURL' : 'URL']['createObjectURL'](file);
+    var url = null;
+    if (window.createObjectURL != undefined) {
+      url = window.createObjectURL(file.files[0]);
+    } else if (window.URL != undefined) {
+      url = window.URL.createObjectURL(file.files[0]);
+    } else if (window.webkitURL != undefined) {
+      url = window.webkitURL.createObjectURL(file.files[0]);
+    }
+    console.log("getObjectURL:"+url);
+    return url;
+  }
+  function cacheLocalMsg(){
+    var draftMsg = $("#myInput-txt").html();
+    localStorage.setItem("draftMsg_"+toId,draftMsg);
+  }
+  function insertChatMsg(msgType,msgInfo,source){
+    var _userId = $("#userId").val();
+    var _doctorId = $("#doctorId").val();
+    $.ajax({
+      type: "POST",
+      url: "/web/h5/chatMsg/insert",
+      data: {
+        "userId": _userId,
+        "doctorId": _doctorId,
+        "msgType": msgType,
+        "msgInfo": msgInfo,
+        "source": source
+      },
+      dataType : "json",
+      success: function(data) {
+        console.log("消息记录入库成功");
+      }
+    });
+  }
+  var isAll = false;//是否是全部数据
+
+  function getChatRecordList(_pageIndex,_pageSize,type){
+    var _userId = $("#userId").val();
+    var _doctorId = $("#doctorId").val();
+    if(isAll){
+      //没有数据不必请求服务器
+      return false;
+    }
+    $.ajax({
+      type: "POST",
+      url: "/web/h5/chatMsg/list",
+      data: {
+        "userId": _userId,
+        "doctorId": _doctorId,
+        "pageNo": _pageIndex,
+        "pageSize": _pageSize
+      },
+      dataType : "json",
+      success: function(data) {
+        var result = data.ret;
+        if(result == 200){
+          //获取列表成功,解析数据
+          var array = data.data.dataArray;
+          if(array.length>0){
+            var showBottomFlag = true;
+            if(_pageIndex>1){
+              showBottomFlag = false;
+            }
+            for(var i=0;i<array.length;i++){
+              var chatobj = array[i];
+              var msgType = chatobj.msgType;
+              var source = chatobj.source;//1用户发起2医生发起
+              if(msgType == "text"){
+                //文本消息
+                if(source == "1"){
+                  showPersonalTxt(chatobj.content,type,showBottomFlag,chatobj.create);
+                }else{
+                  showOppositeTxt(chatobj.content,type,showBottomFlag,chatobj.create);
+                }
+              }else if(msgType == "image"){
+                //图片消息
+                if(source == "1"){
+                  showPersonalImg(chatobj.mediaUrl,type,showBottomFlag,chatobj.create);
+                }else{
+                  showOppositeImg(chatobj.mediaUrl,type,showBottomFlag,chatobj.create);
+                }
+              }else if(msgType == "voice"){
+                //语音消息
+                if(source == "1"){
+                }else{
+                  showOppositeAudio(chatobj.mediaUrl,type,showBottomFlag,chatobj.create);
+                }
+              }else if(msgType == "card"){
+                //JSON转换成为JS对象
+                var card = $.parseJSON(chatobj.cardInfoMsg);
+                //图文消息
+                if(chatobj.cardDesc == "多药"){
+                  //多药
+                  showMedicine(card,type,showBottomFlag,chatobj.create);
+                }else{
+                  //其他图文消息
+                  showCardMsg(card,type,showBottomFlag,chatobj.create);
+                }
+              }else if(msgType == "chatfee"){
+                //聊天计费
+                showTalkFee(type,showBottomFlag,chatobj.create);
+              }
+            }
+          }
+          var resultPageSize = data.data.pageSize;
+          if(array.length==0||array.length<resultPageSize||data.data.isData=="0"){
+            isAll = true;
+          }
+          //循环结束,判断加载样式是否存在
+          if(!$("#pullDown").is(":hidden")){
+            //没隐藏,
+            $("#pullDown").hide();
+            $("#pullDown").removeClass("loading");
+          }
+          huaScroll.refresh();
+        }
+      }
+    });
+  }
+
+  function showChatRecord(_html,type,showBottomFlag,_chatTime){
+    if(type == "before"){
+      //在前面加
+      var _obj = $('#chatRecordDiv').children("div").eq(0);
+      if(_obj.length > 0){
+        //存在
+        _obj.before(_html);
+      }else{
+        //不存在
+        $('#chatRecordDiv').append(_html);
+      }
+    }else{
+      $('#chatRecordDiv').append(_html);
+    }
+    if(showBottomFlag){
+      goBottom();
+    }
+    //显示时间
+    if(_chatTime == null){
+      _chatTime = new Date();
+    }
+    showTipTime(_chatTime,type,showBottomFlag);
+  }
+  var intervalTime = 600000;//十分钟的毫秒值
+
+  function showTipTime(_chatTimelong,type,showBottomFlag){
+    var _chatTime = new Date(_chatTimelong);
+    //获取上一个时间
+    var lasttoList = $("#chatRecordDiv").find(".chattime");
+    var _lastto;
+    if(type == "before"){
+      //取第一个
+      _lastto = lasttoList.eq(0);
+    }else{
+      //去最后一个
+      _lastto = lasttoList.eq(lasttoList.length-1);
+    }
+    var isShowTime = false;
+    if(_lastto.length>0){
+      //存在,比较时间间隔
+      var _timel = _lastto.attr("id");//时间戳,单位:毫秒
+      var _lasttime = new Date(parseInt(_timel));
+      var _difference = _lasttime.getTime()-_chatTime.getTime();
+      _difference = _difference<0? -_difference:_difference;
+      if(_difference>intervalTime){
+        //间隔时间大于十分钟
+        isShowTime = true;
+      }
+    }else{
+      //不存在
+      isShowTime = true;
+    }
+    if(isShowTime){
+      var _showTimeStr;
+      //显示时间
+      var _hstr = " "+formattingNum(_chatTime.getHours())+":"+formattingNum(_chatTime.getMinutes());
+      if(isWeekTime(_chatTime)){
+        if(isToday(_chatTime)){
+          //今天
+          _showTimeStr = _hstr;
+        }else if(isYesterday(_chatTime)){
+          //昨天
+          _showTimeStr = "昨天  "+_hstr;
+        }else{
+          //本周其他时间
+          _showTimeStr = "星期" + "日一二三四五六  ".charAt(new Date().getDay())+_hstr;
+        }
+      }else{
+        //本周之前的时间
+        _showTimeStr = _chatTime.getFullYear()+"年"+formattingNum(_chatTime.getMonth()+1)+"月"+formattingNum(_chatTime.getDate())+"日  "+_hstr;
+      }
+      var _html='<div class="tip chattime" id="'+_chatTimelong+'"><span>'+_showTimeStr+'</span></div>';
+      if(type == "before"){
+        //在前面加
+        var _obj = $('#chatRecordDiv').children("div").eq(0);
+        if(_obj.length > 0){
+          //存在
+          _obj.before(_html);
+        }else{
+          //不存在
+          $('#chatRecordDiv').append(_html);
+        }
+      }else{
+        $('#chatRecordDiv').append(_html);
+      }
+      if(showBottomFlag){
+        goBottom();
+      }
+    }
+  }
+
+  function isWeekTime(_chatTime){
+    var _nowtime = new Date();//'2018-01-22 09:38:00'
+    //本周第一天时间	 86400000=一天的毫秒数
+    var _nowWeekStr = _nowtime.getDay()==0? 7:_nowtime.getDay();//星期几(0 ~ 6)->0-7 周一到周日 getDate() 一个月中的某一天 (1 ~ 31)。
+    var resultTime = new Date(_nowtime.getTime()-(_nowWeekStr-1)*86400000);
+    resultTime.setHours(0,0,0,0);
+//     console.log(resultTime.getFullYear()+"-"+(resultTime.getMonth()+1)+"-"+resultTime.getDate()+" "+resultTime.getHours()+":"+resultTime.getMinutes()+":"+resultTime.getSeconds());
+    if(_chatTime.getTime()>resultTime.getTime()){
+      //本周
+      return true;
+    }
+    return false;
+  }
+  function isToday(_chatTime){
+    var resultTime = new Date();//'2018-01-22 09:38:00'
+    resultTime.setHours(0,0,0,0);
+    if(_chatTime.getTime()>resultTime.getTime()){
+      //今天
+      return true;
+    }
+    return false;
+  }
+  function isYesterday(_chatTime){
+    var _nowtime = new Date();//'2018-01-22 09:38:00'
+    var resultTime = new Date(_nowtime.getTime()-86400000);
+    resultTime.setHours(0,0,0,0);
+    if(_chatTime.getTime()>resultTime.getTime()){
+      //昨天
+      return true;
+    }
+    return false;
+  }
+
+  function formattingNum(num){
+    return num>9? num:"0"+num;
+  }
+  //大图预览
+  function pcviewImg(obj){
+    $("#galleryImg").attr("style", "background-image:url("+$(obj).attr("src")+")");
+    $("#gallery").fadeIn(100);
+  }
+  //大图退出预览
+  $("#gallery").on("click",function() {
+    $("#gallery").fadeOut(100);
+  });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>找药买药</title>
+  <meta charset="UTF-8">
+  <!--<meta content="email=no" name="format-detection" />-->
+  <!--<meta name="format-detection" content="telephone=no" />-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <!--<meta content="telephone=no,email=no" name="format-detection"/>-->
+  <!--<meta content="yes" name="apple-mobile-web-app-capable"/>-->
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+  <!--<link rel="stylesheet" type="text/css" href="../style/reset.css"/>-->
+  <link rel="stylesheet" type="text/css" href="../style/order.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/goods.css"/>
+  <link rel="stylesheet" type="text/css" href="../style/style.css"/>
+  <link rel="stylesheet" href="../style/weui.min.css">
+  <link rel="stylesheet" href="../style/jquery-weui.css">
+
+  <!--阿里rem-->
+  <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+
+  <script src="../js/iscroll-5.2.0.js"></script>
+  <script src="../js/jquery-2.1.4.js"></script>
+  <!-- 分享js -->
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script src="../js/jquery-weui.js"></script>
+
+  <script>
+    var requestUrl = window.location;
+    // console.log("请求地址="+requestUrl);
+    var appId,timestamp,nonceStr,signature;
+    // $.ajax({
+    //   url: "/web/h5/initWxJssdk",
+    //   type: 'POST',
+    //   async: false,
+    //   data : {"requestUrl":encodeURI(requestUrl)},
+    //   dataType:'json',
+    //   success: function(json) {
+    //     console.log("json="+JSON.stringify(json));
+    //     appId = json.appId;
+    //     timestamp = json.timestamp;
+    //     nonceStr = json.nonceStr;
+    //     signature = json.signature;
+    //     console.log("appId="+appId);
+    //   }
+    // });
+    //注册js事件
+    wx.config({
+      debug: false,
+      appId: appId,
+      timestamp: timestamp,
+      nonceStr: nonceStr,
+      signature: signature,
+      jsApiList: [
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard'
+      ]
+    });
+    //将右上角的一些微信的功能菜单隐藏,但是在页面未加载完成的时候,还是可以操作,有时间差
+    wx.ready(function () {
+      wx.hideMenuItems({
+        menuList: [
+          'menuItem:share:appMessage',//发送给朋友
+          'menuItem:share:qq',//分享到QQ
+          'menuItem:share:weiboApp',//分享到Weibo
+          'menuItem:share:QZone',//分享到 QQ 空间
+          'menuItem:share:timeline', // 分享到朋友圈
+          'menuItem:copyUrl', // 复制链接
+          'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+          'menuItem:openWithSafari'//在Safari中打开
+        ],
+        success: function (res) {
+          //alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+        },
+        fail: function (res) {
+          //alert(JSON.stringify(res));
+        }
+      });
+    });
+    function getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+      var r = window.location.search.substr(1).match(reg); //匹配目标参数
+      if (r != null) return unescape(r[2]);
+      return null; //返回参数值
+    }
+    //微信支付
+    function wxpay(requestUrl,coreOpenId,orderId,responseUrl){
+      //发送ajax请求 统一下单
+      $.ajax({
+        url: requestUrl,
+        async: false,
+        type: 'POST',
+        data: {"coreOpenId":coreOpenId,"orderId":orderId},
+        cache:false,
+        dataType:'json',
+        timeout: 10000, //超时时间：10秒
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+          alert("系统连接超时");
+          //TODO: 处理status， http status code，超时 408
+
+          // 注意：如果发生了错误，错误信息（第二个参数）除了得到null之外，还可能
+
+          //是"timeout", "error", "notmodified" 和 "parsererror"。
+
+        },
+        success: function(json) {
+          if(json.code==200){
+            //拉去支付html
+            onBridgeReady(json,responseUrl);
+          }else{
+            alert("支付失败");
+          }
+        }
+      });
+    }
+    function onBridgeReady(json,responseUrl){
+      wx.chooseWXPay({
+        timestamp: json.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+        nonceStr: json.nonceStr, // 支付签名随机串，不长于 32 位
+        package: json.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+        signType: json.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+        paySign: json.paySign, // 支付签名
+        success: function (res) {
+          // 支付成功后的回调函数
+          if(res.errMsg == "chooseWXPay:ok" ) {
+            //成功
+            if(responseUrl.length>0){
+              window.location.href=responseUrl;
+            }else{
+              //关闭支付页面
+              wx.closeWindow();
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</head>
+<body>
+<div id="lyzx_Buy">
+  <div id="buy_Page" class="main">
+    <div class="weui-search-bar" id="searchBar">
+      <form class="weui-search-bar__form" action="#">
+        <div class="weui-search-bar__box">
+          <i class="weui-icon-search"></i>
+          <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索药品" required="">
+          <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+        </div>
+      </form>
+      <div class="weui-search-bar__cancel-btn cart" id="searchCancel" style="display: block;text-align: center;"><img src="../img/center_shop.png" alt=""></div>
+    </div>
+
+    <div class="nav_Type">
+        <ul>
+          <li>默认排序</li>
+          <li>销量排序</li>
+          <li class="price">
+            <div>价格高低</div>
+            <div class="">
+              <p><img class="top" src="../img/price_tb.png" alt=""></p>
+              <!--<p><img class="down" src="../img/classify.png" alt=""></p>-->
+            </div>
+          </li>
+        </ul>
+        <div class="big_IMG">大图</div>
+    </div>
+
+    <div class="drug">
+      <div class="drug_Type">
+        <ul>
+          <li class="active">专科常用药</li>
+          <li>感冒</li>
+          <li>发烧</li>
+          <li>消化不良</li>
+        </ul>
+      </div>
+      <div class="drug_List">
+          <div class="flex pat10">
+            <div class="flex_L"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt=""></div>
+            <div class="flex_R">
+              <p class="weui-media-box__desc f14">好的刷卡缴费合计dggfggfgvfgfgjh收费基础较好的广告打了款hjhjhjhjh</p>
+              <p class="standard c9 f12 mat5">规格：10mlx8/盒</p>
+            </div>
+          </div>
+        <div class="flex pat5">
+          <div class="flex_L"></div>
+          <div class="flex_R">
+            <span class="drug_Pirce cF0184F f18"><span class="f14">￥</span>19.00</span>
+            <span class="fR c9">库存123件</span>
+          </div>
+        </div>
+        <div class="flex pat5">
+          <div class="flex_L"></div>
+          <div class="flex_R">
+            <div class="fR operation">
+              <span class="toggle jian">-</span>
+              <span class="toggle span_num">1</span>
+              <span class="jia">+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="uploading">
+      <img src="../img/photo.png" alt="">
+      <span>传处方买药</span>
+      <!--<input type="file" id="camera" multiple="multiple"capture="camera" accept="image/*" />-->
+    </div>
+  </div>
+
+
+  <div class="popUp_Box">
+    <div class="shadow"></div>
+    <div class="show_Layer floor_Box">
+      <div class="floor">
+        <div class="Upload_Fun">
+          <div class="photograph"><input type="file" placeholder="拍照" accept="image/*" capture="camera"><span>拍照</span></div>
+          <div class="photo_Album"><input type="file" id="fileUp" accept="image/png,image/jpeg"><span>从手机相册选择</span></div>
+        </div>
+        <div class="close" >取消</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <!--<div class="footer">-->
+    <!--<div class="">-->
+      <!--<img src="../img/shop_sel_a.png" alt="">-->
+      <!--<span>全选</span>-->
+    <!--</div>-->
+  <!--</div>-->
+<script src="../js/goods.js"></script>
+<script>
+  $(function() {
+    let num=1;
+    $('#buy_Page .drug').height(window.innerHeight-44-34-10-40);
+
+
+    $('#buy_Page .drug .drug_Type ul li').click(function () {
+      $('#buy_Page .drug .drug_Type ul li').removeClass('active');
+      $(this).addClass('active');
+    });
+    // 点击加数量
+    $('#buy_Page .drug .drug_List .flex .operation .jia').click(function () {
+      // if(){}
+      $('#buy_Page .drug .drug_List .flex .operation .span_num').text(num++);
+      $('#buy_Page .drug .drug_List .flex .operation .toggle').css('display','inline-block');
+    });
+    // 点击减数量
+    $('#buy_Page .drug .drug_List .flex .operation .jian').click(function () {
+      var s_num=$('#buy_Page .drug .drug_List .flex .operation .span_num').text();
+      num=s_num;
+      num--;
+      if(num==0){
+        num=1
+        $('#buy_Page .drug .drug_List .flex .operation .toggle').css('display','none');
+        $('#buy_Page .drug .drug_List .flex .operation .span_num').text(1);
+      }else{
+        $('#buy_Page .drug .drug_List .flex .operation .span_num').text(num);
+
+      }
+
+    });
+
+    $('.uploading').click(function () {
+      onPopup();
+    });
+    $('.close').click(function () {
+      closePopup();
+    })
+  });
+</script>
+</body>
+</html>

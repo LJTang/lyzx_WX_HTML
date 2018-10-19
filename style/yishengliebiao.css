@@ -1,0 +1,330 @@
+body,
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+a{
+    text-decoration:none;
+}
+#list {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f0eff5;
+    font-size: 14px;
+    color: #666;
+    /*没关注
+      .noDoc{
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background: #fff;
+          font-size: 16px;
+          color: #999;
+          dl{
+              width: 100%;
+              margin: 5.333333rem auto;
+              dt{
+                  width: 100%;
+                  height: 4rem;
+                  background: url(../img/weiguanzhu.png) no-repeat 3.6rem 0;
+                  background-size: 2.8rem 3.133333rem;
+              }
+              dd{
+                  width: 100%;
+                  text-align: center;
+              }
+          }
+      }*/
+    /*有关注*/
+}
+#list #contentList {
+    min-height: 101%;
+    background: #f0eff5;
+}
+#list ul {
+    width: 100%;
+    background: #f0eff5;
+}
+#list ul li {
+    width: 100%;
+    margin-bottom: 0.2rem;
+    border-top: 0.013333rem solid #ebebeb;
+    border-bottom: 0.013333rem solid #ebebeb;
+    background: #fff;
+    /*名片下*/
+    /*名片上*/
+}
+#list ul li .down {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 95%;
+    margin: 0 auto;
+    border: 1px solid #ebebeb;
+    margin-bottom: .2rem;
+    -webkit-border-radius: 10px;
+    background:linear-gradient(to top,#f1f1f1,#f8f8f8);
+}
+#list ul li .down a {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row;
+    flex-flow: row;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 1.173333rem;
+    line-height: 1.173333rem;
+    text-align: center;
+    text-decoration:none;
+}
+#list ul li .down a span {
+    display: inline-block;
+    padding-left: 0.533333rem;
+    margin-left: 1.466666rem;
+    height: 1.173333rem;
+    line-height: 1.3rem;
+    color: #656565;
+}
+#list ul li .down .zixun {
+    border-right: 0.013333rem solid #ebebeb;
+}
+#list ul li .down .zixun span {
+    background: url(../img/zixun-20180918.png) no-repeat 0 0.35rem;
+    background-size: 0.6rem 0.6rem;
+    padding-left: 24px;
+}
+#list ul li .down .zhenshi span {
+    background: url(../img/sccfmy-20180918.png) no-repeat 0 0.35rem;
+    background-size: 0.6rem 0.6rem;
+    padding-left: 24px;
+}
+#list ul li .up {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row;
+    flex-flow: row;
+    width: 100%;
+    padding-top: 0.466666rem;
+    padding-left: 0.44rem;
+    padding-right: 0.666666rem;
+    padding-bottom: 0.4rem;
+    /*名片上左*/
+    /*名片上右*/
+}
+#list ul li .up .upLeft {
+    width: 1.066666rem;
+    padding-right: 0.266666rem;
+    overflow: hidden;
+}
+#list ul li .up .upLeft img {
+    display: block;
+    width: 1.066666rem;
+    height: 1.066666rem;
+    border-radius: 3px;
+}
+#list ul li .up .upRight {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding-right: 0.666666rem;
+}
+#list ul li .up .upRight .docNameP {
+    padding-bottom: 0.12rem;
+    height: 18px;
+    line-height: 18px;
+}
+#list ul li .up .upRight .docNameP .docName {
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    color: #343434;
+    font-weight: 900;
+}
+#list ul li .up .upRight .docNameP .renzheng {
+    height: 10px;
+    line-height: 10px;
+    padding: 0 3px;
+    color: #fff;
+    font-size: 10px;
+    background: #C1B497;
+    border-radius: 2px;
+}
+#list ul li .up .upRight .docNameP .weirenzheng {
+    height: 10px;
+    line-height: 10px;
+    padding: 0 3px;
+    color: #fff;
+    font-size: 10px;
+    background: #e64340;
+    border-radius: 2px;
+}
+#list ul li .up .upRight p {
+    width: 100%;
+    min-height: 22px;
+    line-height: 22px;
+    color: #666;
+    font-size: 14px;
+}
+#list ul li .up .upRight .shanchang {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+#list ul li .up .upRight .zhiwei span {
+    float: left;
+}
+#list ul li .up .upRight .zhiwei .keshi {
+    padding-right: 0.16rem;
+    border-right: 0.013333rem solid #666;
+}
+#list ul li .up .upRight .zhiwei .zhicheng {
+    padding-left: 0.16rem;
+}
+#list ul li .up .upRight .docNameP,
+#list ul li .up .upRight .zhiwei {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/*没关注*/
+.noDoc {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+    font-size: 16px;
+    color: #999;
+}
+.noDoc dl {
+    width: 100%;
+    margin: 5.333333rem auto;
+}
+.noDoc dl dt {
+    width: 100%;
+    height: 4rem;
+    background: url(../img/weiguanzhu.png) no-repeat 3.6rem 0;
+    background-size: 2.8rem 3.133333rem;
+}
+.noDoc dl dd {
+    width: 100%;
+    text-align: center;
+}
+/*******************************************************/
+#lyzx,#doctor_Page{
+    min-height:100%;
+    background: #f0eff5;
+}
+#doctor_Page .ul_List li{
+    width: 94%;
+    margin:0 auto;
+    padding-top:0.3rem;
+}
+
+#doctor_Page .ul_List .box_Show{
+    background:#fff;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.06);
+    border-radius:4px;
+}
+#doctor_Page .ul_List .content_Top a{
+    display:flex;
+    flex-direction: row;
+    padding:0.3rem 0;
+}
+#doctor_Page .ul_List .content_Top .doctors_Face{
+    width: 60px;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.10);
+    margin-left:0.35rem;
+}
+#doctor_Page .ul_List .content_Top .doctors_Face img{
+    width: 60px;
+}
+#doctor_Page .ul_List .content_Top .text_D{
+    width: 70%;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-left: 0.35rem;
+    margin-right: 0.35rem;
+}
+#doctor_Page .ul_List .content_Top .text_D .doctor_Name{
+    font-family: PingFang-SC-Bold;
+    font-size:0.55rem;
+    color: #333333;
+    letter-spacing:1px;
+}
+.cC1B497{color:#C1B497;}
+#doctor_Page .ul_List .content_Top .text_D .fR{
+    font-size:0.55rem;
+    color: #999;
+}
+#doctor_Page .ul_List .content_Top .text_D  .hospital_Name{
+    color:#666;
+    font-size:0.45rem;
+}
+#doctor_Page .ul_List .content_Top .text_D  .speciality{
+    color: #999;
+    width:100%;
+    height:22px;
+    line-height:22px;
+    overflow:hidden;
+    text-overflow : ellipsis;
+    white-space:nowrap
+}
+#doctor_Page .ul_List .btn_Buottom{
+    display:flex;
+    flex-direction:row;
+    width:100%;
+    border-top:1px solid #C1B497;
+    height: 40px;
+    line-height: 40px;
+    background:#fff;
+    text-align: center;
+    border-bottom-left-radius:4px;
+    border-bottom-right-radius:4px;
+}
+#doctor_Page .ul_List .btn_Buottom .buy{width: 50%;}
+#doctor_Page .ul_List .btn_Buottom .buy a{
+    display:block;
+    border-right: 1px solid #C1B497;
+}
+#doctor_Page .ul_List .btn_Buottom  .consult{width: 50%;}
+#doctor_Page .ul_List .btn_Buottom a{color:#333;font-siz:0.45rem;}
+#doctor_Page .ul_List .btn_Buottom a img{
+    width:0.8rem;
+    display:inline-block;
+    vertical-align:middle;
+    margin-right: 5px;
+}
+
+.footer_Btn{
+    display:flex;
+    flex-direction:row;
+    width:100%;
+    padding:0.1rem 0;
+    background:#fff;
+    text-align: center;
+}
+.footer_Btn .doctor_Btn,.footer_Btn .personage_Btn{width: 50%;}
+.footer_Btn a{
+    display: inline-block;
+    color:#333;
+}
+.footer_Btn a p{
+    color:#333;
+}
+.footer_Btn a p img{
+    width:0.65rem;
+}

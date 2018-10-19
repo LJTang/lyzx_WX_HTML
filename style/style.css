@@ -1,0 +1,188 @@
+body,
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+a{text-decoration:none;}
+a:link{text-decoration:none;}
+a:active{text-decoration:none;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:none;}
+span {text-decoration:none;}
+
+.fL{float:left;}
+.fR{float:right;}
+
+#lyzx a:active{text-decoration:none;}
+#personalCenter_Page a:active{text-decoration:none;}
+
+.c0{color:#000;}
+.c3{color:#333;}
+.c6{color:#666;}
+.c9{color:#999;}
+.cF0184F{color:#F0184F ;}
+.cC1B497{color:#C1B497 ;}
+.f12{font-size:12px;}
+.f14{font-size:14px;}
+.f16{font-size:16px;}
+.f18{font-size:18px;}
+.f20{font-size:20px;}
+
+.pat5{padding-top:5px;}
+.pat10{padding-top: 10px;}
+.pab10{padding-bottom: 10px;}
+
+.mat5{margin-top:5px;}
+.mat10{margin-top:10px;}
+.mat20{margin-top:20px;}
+
+.mal10{margin-left: 10px;}
+
+.mar10{margin-right: 10px;}
+
+.mab10{margin-bottom:10px;}
+
+.borT{border-top:1px solid #d8d8d8;}
+.borB{border-bottom:1px solid #d8d8d8;}
+.bgFFF{background:#fff;}
+body .weui-cell_access .weui-cell__ft:after{
+    border-color:#999;
+    width:8px;
+    height: 8px;
+}
+.main{overflow: auto;}
+.flex{display: flex;}
+.display{display: block}
+.display_N{display: none;}
+
+/********* 弹出框 ***********/
+.popUp_Box{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:100%;
+}
+.shadow{
+    height:100%;
+    width:100%;
+    position:relative;
+    background:#333;
+    opacity:0.5;
+    filter:alpha(opacity=50);
+    z-index:10;
+}
+.show_Layer{
+    position: absolute;
+    /*background:#fff;*/
+    z-index:11;
+    border-radius:0;
+}
+/********************/
+.floor_Box{
+    bottom:0;
+    width:100%;
+    color:#1A7DD7;
+    font-size:16px;
+}
+.floor_Box .Upload_Fun{
+    margin:0 10px;
+    background:#fff;
+    border-radius: 5px;
+}
+.photograph{
+    border-bottom:1px solid #d8d8d8;
+}
+.photograph input,.photo_Album input{
+    opacity:0;
+    height:40px;
+    position:absolute;
+    top:0;
+    left:0;
+}
+.photograph,.photo_Album{
+    height:40px;
+    line-height:40px;
+    text-align: center;
+    position: relative;
+}
+
+.floor_Box .close{
+    margin:10px;
+    height:40px;
+    line-height:40px;
+    text-align: center;
+    background: #fff;
+    border-radius:5px;
+
+}
+
+.confirmationMessage_Box{
+    top:50%;
+    width:80%;
+    left: 10%;
+    background: #fff;
+}
+.confirmationMessage_Box .close_IMG{
+    position: absolute;
+    right: 10px;
+    top:10px;
+}
+.confirmationMessage_Box .close_IMG img{
+    width:20px;
+    height: 20px;
+}
+.confirmationMessage_Box .title{
+    text-align: center;
+    padding:10px 0;
+}
+.confirmationMessage_Box .phone{
+    display: flex;
+    padding:10px 10px;
+    font-size:18px;
+    color: #333;
+}
+.confirmationMessage_Box .phone div.text{
+    width:100px;
+}
+.confirmationMessage_Box .phone .div_Input{
+    height:30px;
+    line-height: 30px;
+    flex: 1;
+    background: #F5F5F5;
+    color:#666;
+    font-size:16px;
+    border:none;
+}
+.confirmationMessage_Box .phone .div_Input input{
+    height:30px;
+    line-height: 30px;
+    padding-left: 5px;
+    background: #F5F5F5;
+    color:#666;
+    font-size:16px;
+    border:none;
+}
+.confirmationMessage_Btn{
+    display: flex;
+    padding: 10px;
+}
+.confirmationMessage_Btn div{
+    width:45%;
+    /*height:38px;*/
+    line-height:2;
+    font-size: 18px;
+    color: #C1B497;
+    text-align: center;
+}
+.confirmationMessage_Btn div.close{
+    background: #FFFFFF;
+    border: 1px solid #C1B497;
+}
+.confirmationMessage_Btn div.sub{
+    background: #C1B497;
+    border: 1px solid #C1B497;
+    color: #fff;
+    margin-left: 10%;
+}

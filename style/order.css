@@ -1,0 +1,209 @@
+#lyzx_Order,#lyzx_OrderDetails{
+    height:100%;
+    background:#F1F0F5;
+    font-size: 12px;
+    overflow:auto;
+}
+#order_Page a:active{text-decoration:none;}
+#orderDetails_Page a:active{text-decoration:none;}
+#orderDetails_Page a{color: #333;}
+#lyzx_Order .weui-navbar__item{
+    color: #666;
+    border:none;
+    background: #fff;
+    font-size:14px;
+}
+#lyzx_Order .weui-bar__item--on{
+    color: #C1B497;
+    border-bottom:2px solid #C1B497;
+    background: #fff;
+}
+#lyzx_Order .weui-navbar__item:after{
+    border:none;
+    text-decoration: none;
+}
+#lyzx_Order .weui-tab__bd{
+    width:94%;
+    margin: 0 auto;
+}
+#lyzx_Order .weui-tab__bd .order_List{
+    background:#fff;
+    margin: 0.2rem auto;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.06);
+    border-radius:4px;
+}
+.pharmacy_Name .title{
+   color:#333;
+    font-size:16px;
+}
+.pharmacy_Name .fR{
+    color:#FAA253;
+    font-size:12px;
+    position:absolute;
+    right:0.2rem;
+}
+#lyzx_Order .weui-panel{margin: 0;}
+#lyzx_Order .weui-media-box{padding:0.2rem;}
+#lyzx_Order .weui-panel:after,#lyzx_Order .weui-panel:before{height:0;border:none;}
+#lyzx_Order a{color:#333;}
+#lyzx_Order .weui-media-box .weui-media-box__title{
+    font-size:0.3rem;
+    color:#333;
+}
+#lyzx_Order .weui-media-box .weui-media-box_num{
+    font-size:0.2rem;
+}
+
+
+
+.list_Box .goods{
+    display: flex;
+    flex-direction:row;
+    padding:0.2rem;
+}
+.list_Box .goods .img{
+    width:60px;
+    height:60px;
+    margin-right:0.3rem;
+    text-align: right;
+    /*flex-direction:row;*/
+}
+.list_Box .goods img{
+    width:60px;
+    height:60px;
+}
+.list_Box .goods .text{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: hidden;
+}
+.list_Box .goods .title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.list_Box .goods .title .desc{
+    font-size:14px;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    color: #333;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp:2;
+}
+.list_Box .goods .desc_Text{
+   color: #999;
+    overflow: hidden;
+    line-height: 1.2;
+    word-wrap:break-word;
+    display: inline-block;
+    width:100%;
+
+}
+.list_Box .goods .quantity{
+    font-size:14px;
+    text-align:right;
+}
+
+.list_Footer{
+    padding: 0.2rem;
+}
+.amount_Box{
+    text-align: right;
+    padding:10px 0;
+    border-top:1px solid #d8d8d8;
+}
+
+.list_Footer .btn_Box{
+    display: flex;
+    /*flex-direction: row;*/
+    justify-content: space-around;
+}
+.list_Footer .btn_Box .flex{flex:1;}
+.list_Footer .btn_Box .btn{
+    float:right;
+    width:80px;
+    height:30px;
+    line-height: 30px;
+    border-radius:20px;
+    text-align: center;
+    border:1px solid #999;
+    color:#999;
+    margin-left: 10px;
+}
+.list_Footer .btn_Box .pay{
+    color:#FAA253;
+    border:1px solid #FAA253;
+}
+/************** 订单详情 ************/
+
+.top_Address{
+    padding-top: 10px;
+    /*background:#fff;*/
+}
+.top_Address .address_Box{
+    background:#fff;
+}
+
+.top_Address .address_Box .goods_Address{
+    padding-left:10px;
+    padding-right:10px;
+    display: flex;
+    flex-direction: row;
+    font-size:14px;
+}
+.top_Address .address_Box .goods_Address div:first-child{
+    text-align: right;
+    width:60px;
+    color:#999;
+}
+.top_Address .address_Box .goods_Address div:last-child{
+    font-size: 16px;
+    flex: 1;
+    margin-left: 10px;
+    color:#333;
+    overflow: hidden;
+    word-wrap:break-word;
+}
+.hr_C{
+    height:8px;
+    width: 100%;
+    background-image:url('../img/hr_c.png');
+    margin-bottom: 10px;
+}
+
+.order_List{
+    background: #fff;
+    font-size: 14px;
+}
+#lyzx_OrderDetails .amount_Box{border:none;}
+.order_Details_Box{
+    margin-top: 10px;
+    background: #fff;
+    font-size:14px;
+}
+.order_Details_Box .title{
+    margin:0 10px;
+    padding-top:10px;
+    padding-bottom:5px;
+}
+.order_Info{
+    padding: 5px 0;
+    display: flex;
+    flex-direction: row;
+    color:#666;
+    margin: 0px 10px 0 10px;
+}
+.order_Info p:first-child{
+    width: 60px;
+    margin-right: 10px;
+}
+.order_Info p:first-child{
+}
+.cFAA253{color:#FAA253;}
